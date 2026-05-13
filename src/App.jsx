@@ -337,28 +337,6 @@ function GeneratePage({ quizHistory, setQuizHistory }) {
 
   const cat = selCat ? CATEGORIES.find(c => c.id === selCat) : null;
 
-  // Try to pull complete JSON objects out of a partial stream buffer
-  function parsePartialQuestions(buffer) {
-    const results = [];
-    let depth = 0, inString = false, escape = false, start = -1;
-    for (let i = 0; i < buffer.length; i++) {
-      const ch = buffer[i];
-      if (escape) { escape = false; continue; }
-      if (ch === "\\" && inString) { escape = true; continue; }
-      if (ch === '"') { inString = !inString; continue; }
-      if (inString) continue;
-      if (ch === "{") { if (depth === 0) start = i; depth++; }
-      else if (ch === "}") {
-        depth--;
-        if (depth === 0 && start !== -1) {
-          try { results.push(JSON.parse(buffer.slice(start, i + 1))); } catch {}
-          start = -1;
-        }
-      }
-    }
-    return results;
-  }
-
   async function generate() {
     setLoading(true); setError(null); setQuestions([]);
     const topic = selTopic || cat?.label || "General Business";
@@ -372,50 +350,15 @@ function GeneratePage({ quizHistory, setQuizHistory }) {
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messages: [{ role: "user", content: prompt }],
-        }),
+        body: JSON.stringify({ messages: [{ role: "user", content: prompt }] }),
       });
-
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = "";
-      let streamedQuestions = [];
-      let switchedToQuiz = false;
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        const chunk = decoder.decode(value, { stream: true });
-        // SSE lines: "data: {...}"
-        for (const line of chunk.split("\n")) {
-          if (!line.startsWith("data: ")) continue;
-          const data = line.slice(6).trim();
-          if (data === "[DONE]") continue;
-          try {
-            const evt = JSON.parse(data);
-            if (evt.type === "content_block_delta" && evt.delta?.type === "text_delta") {
-              buffer += evt.delta.text;
-              const parsed = parsePartialQuestions(buffer);
-              if (parsed.length > streamedQuestions.length) {
-                streamedQuestions = parsed;
-                setQuestions([...parsed]);
-                // Switch to quiz view as soon as first question arrives
-                if (!switchedToQuiz && parsed.length >= 1) {
-                  switchedToQuiz = true;
-                  setAnswers({}); setCur(0); setRevealed(false);
-                  setElapsed(0); setTimerOn(true); setShortInput("");
-                  setStep("quiz");
-                  setLoading(false);
-                }
-              }
-            }
-          } catch {}
-        }
-      }
+      const data = await res.json();
+      const text = data.content?.map(b => b.text || "").join("") || "";
+      const parsed = JSON.parse(text.replace(/```json|```/g, "").trim());
+      setQuestions(parsed); setAnswers({}); setCur(0); setRevealed(false);
+      setElapsed(0); setTimerOn(true); setShortInput(""); setStep("quiz");
     } catch (e) {
       setError("Could not generate questions. Please try again.");
-      setLoading(false);
     }
     setLoading(false);
   }
@@ -565,14 +508,8 @@ function GeneratePage({ quizHistory, setQuizHistory }) {
             <span style={{ fontSize: 13, color: "#444" }}>{cat?.icon} {selTopic || cat?.label}</span>
           </div>
           <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
-            {loading && readyAhead < 3 && (
-              <span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, color: "#2d9b6b" }}>
-                <span style={{ width: 8, height: 8, borderRadius: "50%", border: "1.5px solid rgba(45,155,107,0.3)", borderTop: "1.5px solid #2d9b6b", display: "inline-block", animation: "spin 0.8s linear infinite" }} />
-                loading more
-              </span>
-            )}
             <span style={{ fontSize: 13, color: "#444", fontVariantNumeric: "tabular-nums" }}>⏱ {fmt(elapsed)}</span>
-            <span style={{ fontSize: 12, color: "#444" }}>{cur + 1}/{questions.length}{loading ? "+" : ""}</span>
+            <span style={{ fontSize: 12, color: "#444" }}>{cur + 1}/{questions.length}</span>
           </div>
         </div>
         <div style={{ height: 3, background: "rgba(255,255,255,0.05)", borderRadius: 3, marginBottom: 26, overflow: "hidden" }}>
@@ -627,18 +564,7 @@ function GeneratePage({ quizHistory, setQuizHistory }) {
               </div>
             )}
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
-              {cur < questions.length - 1 ? (
-                questions[cur + 1] ? (
-                  <button className="btn-g" onClick={next}>Next Question →</button>
-                ) : (
-                  <button className="btn-g" disabled style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <span style={{ width: 12, height: 12, borderRadius: "50%", border: "1.5px solid rgba(255,255,255,0.2)", borderTop: "1.5px solid #fff", display: "inline-block", animation: "spin 0.8s linear infinite" }} />
-                    Loading next...
-                  </button>
-                )
-              ) : (
-                <button className="btn-g" onClick={next}>See Results →</button>
-              )}
+              <button className="btn-g" onClick={next}>{cur < questions.length - 1 ? "Next Question →" : "See Results →"}</button>
             </div>
           </div>
         )}

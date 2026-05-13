@@ -1,8 +1,6 @@
-export const config = { runtime: "edge" };
-
-export default async function handler(req) {
+export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return new Response("Method not allowed", { status: 405 });
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
   const body = await req.json();
@@ -17,14 +15,14 @@ export default async function handler(req) {
     body: JSON.stringify({
       model: "claude-sonnet-4-20250514",
       max_tokens: 4000,
-      stream: true,
       messages: body.messages,
     }),
   });
 
-  return new Response(response.body, {
+  const data = await response.json();
+  return new Response(JSON.stringify(data), {
     headers: {
-      "Content-Type": "text/event-stream",
+      "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
     },
   });
