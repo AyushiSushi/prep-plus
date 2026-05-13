@@ -369,13 +369,10 @@ function GeneratePage({ quizHistory, setQuizHistory }) {
       ? `You are a DECA/FBLA exam generator. Generate exactly ${count} short-answer questions about: ${topic}. Difficulty: ${dStr}. Return ONLY a valid JSON array, no markdown.\n[{"q":"...","answer":"Model answer in 1-3 sentences.","keyPoints":["point 1","point 2"],"difficulty":"Easy|Medium|Hard"}]`
       : `You are a DECA/FBLA exam generator. Generate exactly ${count} case study questions about: ${topic}. Difficulty: ${dStr}. Return ONLY a valid JSON array, no markdown.\n[{"scenario":"2-3 sentence business scenario.","q":"Question?","answer":"Recommended approach in 2-4 sentences.","keyPoints":["point 1","point 2","point 3"],"difficulty":"Easy|Medium|Hard"}]`;
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 4000,
-          stream: true,
           messages: [{ role: "user", content: prompt }],
         }),
       });
