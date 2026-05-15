@@ -14,7 +14,7 @@ export default async function handler(req, res) {
       "X-Title": "Prep+",
     },
     body: JSON.stringify({
-      model: "deepseek/deepseek-r1:free",
+      model: "google/gemma-3-27b-it:free",
       max_tokens: 4000,
       messages: body.messages,
     }),
