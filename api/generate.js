@@ -14,7 +14,7 @@ export default async function handler(req, res) {
       "X-Title": "Prep+",
     },
     body: JSON.stringify({
-      model: "meta-llama/llama-3.3-70b-instruct:free",
+      model: "deepseek/deepseek-r1:free",
       max_tokens: 4000,
       messages: body.messages,
     }),
