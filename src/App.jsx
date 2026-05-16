@@ -15,8 +15,6 @@ const DIFFICULTIES = ["Mixed", "Easy", "Medium", "Hard"];
 const COUNTS = [5, 10, 15, 20];
 const QTYPES = [
   { id: "mcq", label: "Multiple Choice", desc: "4-option questions with instant grading" },
-  { id: "short", label: "Short Answer", desc: "Write your answer, see the model answer" },
-  { id: "case", label: "Case Study", desc: "Scenario-based business problem" },
 ];
 
 function Logo({ nav }) {
