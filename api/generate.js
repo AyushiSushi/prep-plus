@@ -14,7 +14,7 @@ export default async function handler(req, res) {
       "X-Title": "Prep+",
     },
     body: JSON.stringify({
-      model: "google/gemma-3-27b-it:free",
+      model: "openai/gpt-oss-120b:free",
       max_tokens: 4000,
       messages: body.messages,
     }),
