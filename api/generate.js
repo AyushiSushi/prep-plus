@@ -16,7 +16,7 @@ export default async function handler(req) {
       "X-Title": "Prep+",
     },
     body: JSON.stringify({
-      model: "openai/gpt-oss-20b:free",
+      model: "meta-llama/llama-3.3-70b-instruct:free",
       max_tokens: 4000,
       stream: true,
       messages: body.messages,
