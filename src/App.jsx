@@ -337,6 +337,27 @@ function GeneratePage({ quizHistory, setQuizHistory }) {
 
   const cat = selCat ? CATEGORIES.find(c => c.id === selCat) : null;
 
+  function parsePartialQuestions(buffer) {
+    const results = [];
+    let depth = 0, inString = false, escape = false, start = -1;
+    for (let i = 0; i < buffer.length; i++) {
+      const ch = buffer[i];
+      if (escape) { escape = false; continue; }
+      if (ch === "\\" && inString) { escape = true; continue; }
+      if (ch === '"') { inString = !inString; continue; }
+      if (inString) continue;
+      if (ch === "{") { if (depth === 0) start = i; depth++; }
+      else if (ch === "}") {
+        depth--;
+        if (depth === 0 && start !== -1) {
+          try { results.push(JSON.parse(buffer.slice(start, i + 1))); } catch {}
+          start = -1;
+        }
+      }
+    }
+    return results;
+  }
+
   async function generate() {
     setLoading(true); setError(null); setQuestions([]);
     const topic = selTopic || cat?.label || "General Business";
@@ -352,11 +373,45 @@ function GeneratePage({ quizHistory, setQuizHistory }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: [{ role: "user", content: prompt }] }),
       });
-      const data = await res.json();
-      const text = data.content?.map(b => b.text || "").join("") || "";
-      const parsed = JSON.parse(text.replace(/```json|```/g, "").trim());
-      setQuestions(parsed); setAnswers({}); setCur(0); setRevealed(false);
-      setElapsed(0); setTimerOn(true); setShortInput(""); setStep("quiz");
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let allText = "";
+      let streamedQuestions = [];
+      let switchedToQuiz = false;
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+        for (const line of chunk.split("\n")) {
+          if (!line.startsWith("data: ")) continue;
+          const data = line.slice(6).trim();
+          if (data === "[DONE]") continue;
+          try {
+            const evt = JSON.parse(data);
+            const text = evt.choices?.[0]?.delta?.content || "";
+            if (text) {
+              allText += text;
+              const parsed = parsePartialQuestions(allText);
+              if (parsed.length > streamedQuestions.length) {
+                streamedQuestions = parsed;
+                setQuestions([...parsed]);
+                if (!switchedToQuiz && parsed.length >= 1) {
+                  switchedToQuiz = true;
+                  setAnswers({}); setCur(0); setRevealed(false);
+                  setElapsed(0); setTimerOn(true); setShortInput("");
+                  setStep("quiz");
+                  setLoading(false);
+                }
+              }
+            }
+          } catch {}
+        }
+      }
+      if (!switchedToQuiz) {
+        setError("Could not generate questions. Please try again.");
+      }
     } catch (e) {
       setError("Could not generate questions. Please try again.");
     }
