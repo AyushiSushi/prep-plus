@@ -300,7 +300,7 @@ function HomePage({ setPage }) {
       {/* ── FOOTER ── */}
       <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)", padding: "18px 24px", display: "flex", justifyContent: "center", gap: 20, flexWrap: "wrap", alignItems: "center" }}>
         {["home","about","disclaimer"].map(p => <button key={p} onClick={() => setPage(p)} style={{ background: "none", border: "none", color: "#333", fontSize: 12, cursor: "pointer", fontFamily: "inherit", textTransform: "capitalize" }}>{p}</button>)}
-        <a href="mailto:prepplus.site@gmail.com" style={{ color: "#444", fontSize: 12, textDecoration: "none" }}>prepplus.site@gmail.com</a>
+        <a href="mailto:prepplus.app@gmail.com" style={{ color: "#444", fontSize: 12, textDecoration: "none" }}>prepplus.app@gmail.com</a>
         <span style={{ color: "#252525", fontSize: 12 }}>Prep+ is not affiliated with DECA, FBLA, or any organization.</span>
       </div>
     </div>
