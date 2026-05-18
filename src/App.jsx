@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { Analytics } from '@vercel/analytics/react';
 
 const CATEGORIES = [
   { id: "accounting-finance", icon: "📊", label: "Accounting & Finance", accent: "#2d9b6b", color: "#1a6b4a", topics: ["Accounting","Business Finance","Financial Statements","Personal Finance & Financial Literacy","Financial Planning","Investing & Securities"] },
@@ -822,6 +823,7 @@ export default function PrepPlus() {
       {page === "dashboard" && <DashboardPage quizHistory={quizHistory} />}
       {page === "about" && <AboutPage setPage={setPage} />}
       {page === "disclaimer" && <DisclaimerPage />}
+      <Analytics />
     </div>
   );
 }
