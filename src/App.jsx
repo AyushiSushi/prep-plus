@@ -310,6 +310,14 @@ function HomePage({ setPage }) {
 // ── GENERATE (config + quiz + results) ───────────────────────────────────────
 import questionBank from "./questionBank.json";
 
+function shuffleOptions(question) {
+  const letters = ["A", "B", "C", "D"];
+  const correctText = question.options[letters.indexOf(question.answer)];
+  const shuffled = [...question.options].sort(() => Math.random() - 0.5);
+  const newAnswer = letters[shuffled.indexOf(correctText)];
+  return { ...question, options: shuffled, answer: newAnswer };
+}
+
 function getQuestions(catId, topic, difficulty, count) {
   const key = topic ? `${catId}::${topic}` : null;
   let pool = [];
@@ -331,7 +339,7 @@ function getQuestions(catId, topic, difficulty, count) {
 
   // Shuffle and pick count
   const shuffled = [...pool].sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, count);
+  return shuffled.slice(0, count).map(shuffleOptions);
 }
 
 function GeneratePage({ quizHistory, setQuizHistory }) {
