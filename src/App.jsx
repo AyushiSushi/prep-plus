@@ -308,6 +308,32 @@ function HomePage({ setPage }) {
 }
 
 // ── GENERATE (config + quiz + results) ───────────────────────────────────────
+import questionBank from "./questionBank.json";
+
+function getQuestions(catId, topic, difficulty, count) {
+  const key = topic ? `${catId}::${topic}` : null;
+  let pool = [];
+
+  if (key && questionBank[key]) {
+    pool = questionBank[key];
+  } else {
+    // If no specific topic, combine all topics in the category
+    Object.entries(questionBank).forEach(([k, qs]) => {
+      if (k.startsWith(catId + "::")) pool.push(...qs);
+    });
+  }
+
+  // Filter by difficulty
+  if (difficulty !== "Mixed") {
+    const filtered = pool.filter(q => q.difficulty === difficulty);
+    pool = filtered.length >= count ? filtered : pool;
+  }
+
+  // Shuffle and pick count
+  const shuffled = [...pool].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, count);
+}
+
 function GeneratePage({ quizHistory, setQuizHistory }) {
   const [step, setStep] = useState("config");
   const [selCat, setSelCat] = useState(null);
@@ -320,12 +346,10 @@ function GeneratePage({ quizHistory, setQuizHistory }) {
   const [answers, setAnswers] = useState({});
   const [shortInput, setShortInput] = useState("");
   const [revealed, setRevealed] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [elapsed, setElapsed] = useState(0);
   const [timerOn, setTimerOn] = useState(false);
   const tRef = useRef(null);
-  const LMSGS = ["Generating questions...","Calibrating difficulty...","Building your set...","Almost ready..."];
 
   useEffect(() => {
     if (timerOn) tRef.current = setInterval(() => setElapsed(e => e + 1), 1000);
@@ -335,85 +359,17 @@ function GeneratePage({ quizHistory, setQuizHistory }) {
 
   const cat = selCat ? CATEGORIES.find(c => c.id === selCat) : null;
 
-  function parsePartialQuestions(buffer) {
-    const results = [];
-    let depth = 0, inString = false, escape = false, start = -1;
-    for (let i = 0; i < buffer.length; i++) {
-      const ch = buffer[i];
-      if (escape) { escape = false; continue; }
-      if (ch === "\\" && inString) { escape = true; continue; }
-      if (ch === '"') { inString = !inString; continue; }
-      if (inString) continue;
-      if (ch === "{") { if (depth === 0) start = i; depth++; }
-      else if (ch === "}") {
-        depth--;
-        if (depth === 0 && start !== -1) {
-          try { results.push(JSON.parse(buffer.slice(start, i + 1))); } catch {}
-          start = -1;
-        }
-      }
+  function generate() {
+    setError(null);
+    const picked = getQuestions(selCat, selTopic, diff, count);
+    if (!picked || picked.length === 0) {
+      setError("No questions found for this selection. Try different settings.");
+      return;
     }
-    return results;
-  }
-
-  async function generate() {
-    setLoading(true); setError(null); setQuestions([]);
-    const topic = selTopic || cat?.label || "General Business";
-    const dStr = diff === "Mixed" ? "a mix of easy, medium, and hard" : diff.toLowerCase();
-    let prompt = qtype === "mcq"
-      ? `You are a DECA/FBLA exam generator. Generate exactly ${count} multiple-choice questions about: ${topic}. Difficulty: ${dStr}. Return ONLY a valid JSON array, no markdown, no explanation.\n[{"q":"...","options":["A) ...","B) ...","C) ...","D) ..."],"answer":"A","explanation":"...","difficulty":"Easy|Medium|Hard"}]`
-      : qtype === "short"
-      ? `You are a DECA/FBLA exam generator. Generate exactly ${count} short-answer questions about: ${topic}. Difficulty: ${dStr}. Return ONLY a valid JSON array, no markdown.\n[{"q":"...","answer":"Model answer in 1-3 sentences.","keyPoints":["point 1","point 2"],"difficulty":"Easy|Medium|Hard"}]`
-      : `You are a DECA/FBLA exam generator. Generate exactly ${count} case study questions about: ${topic}. Difficulty: ${dStr}. Return ONLY a valid JSON array, no markdown.\n[{"scenario":"2-3 sentence business scenario.","q":"Question?","answer":"Recommended approach in 2-4 sentences.","keyPoints":["point 1","point 2","point 3"],"difficulty":"Easy|Medium|Hard"}]`;
-    try {
-      const res = await fetch("/api/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: [{ role: "user", content: prompt }] }),
-      });
-
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      let allText = "";
-      let streamedQuestions = [];
-      let switchedToQuiz = false;
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        const chunk = decoder.decode(value, { stream: true });
-        for (const line of chunk.split("\n")) {
-          if (!line.startsWith("data: ")) continue;
-          const data = line.slice(6).trim();
-          if (data === "[DONE]") continue;
-          try {
-            const evt = JSON.parse(data);
-            const text = evt.choices?.[0]?.delta?.content || "";
-            if (text) {
-              allText += text;
-              const parsed = parsePartialQuestions(allText);
-              if (parsed.length > streamedQuestions.length) {
-                streamedQuestions = parsed;
-                setQuestions([...parsed]);
-                if (!switchedToQuiz && parsed.length >= 1) {
-                  switchedToQuiz = true;
-                  setAnswers({}); setCur(0); setRevealed(false);
-                  setElapsed(0); setTimerOn(true); setShortInput("");
-                  setStep("quiz");
-                  setLoading(false);
-                }
-              }
-            }
-          } catch {}
-        }
-      }
-      if (!switchedToQuiz) {
-        setError("Could not generate questions. Please try again.");
-      }
-    } catch (e) {
-      setError("Could not generate questions. Please try again.");
-    }
-    setLoading(false);
+    setQuestions(picked);
+    setAnswers({}); setCur(0); setRevealed(false);
+    setElapsed(0); setTimerOn(true); setShortInput("");
+    setStep("quiz");
   }
 
   function handleMCQ(letter) {
@@ -513,10 +469,8 @@ function GeneratePage({ quizHistory, setQuizHistory }) {
 
         {error && <div style={{ background: "rgba(192,48,42,0.13)", border: "1px solid rgba(192,48,42,0.28)", borderRadius: 10, padding: "12px 15px", fontSize: 13.5, color: "#ff8080", marginBottom: 16 }}>{error}</div>}
 
-        <button className="btn-g" disabled={loading || !selCat} onClick={generate} style={{ padding: "14px 34px", fontSize: 15, borderRadius: 12 }}>
-          {loading
-            ? <span style={{ display: "flex", alignItems: "center", gap: 9 }}><span style={{ width: 15, height: 15, border: "2px solid rgba(255,255,255,0.3)", borderTop: "2px solid #fff", borderRadius: "50%", display: "inline-block", animation: "spin 0.7s linear infinite" }} />Generating...</span>
-            : `Generate ${count} Questions →`}
+        <button className="btn-g" disabled={!selCat} onClick={generate} style={{ padding: "14px 34px", fontSize: 15, borderRadius: 12 }}>
+          Start Practice →
         </button>
         {!selCat && <div style={{ fontSize: 12, color: "#333", marginTop: 7 }}>Select a subject area to continue.</div>}
       </div>
@@ -525,22 +479,9 @@ function GeneratePage({ quizHistory, setQuizHistory }) {
 
   // QUIZ
   const q = questions[cur];
-  // Still streaming first question — show a slim loader
-  if (step === "quiz" && !q) return (
-    <div style={{ fontFamily: "'DM Sans', system-ui, sans-serif", color: "#f0f0f0", background: "#0d0d12", minHeight: "calc(100vh - 56px)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <style>{GS}</style>
-      <div style={{ textAlign: "center" }}>
-        <div style={{ width: 36, height: 36, border: "3px solid rgba(255,255,255,0.08)", borderTop: "3px solid #2d9b6b", borderRadius: "50%", animation: "spin 0.8s linear infinite", margin: "0 auto 16px" }} />
-        <div style={{ fontSize: 14, color: "#555" }}>Building your first question...</div>
-      </div>
-    </div>
-  );
   if (!q) return null;
-
   const isCorrect = qtype === "mcq" && answers[cur] === q.answer;
   const progress = (cur / questions.length) * 100;
-  // How many questions are ready ahead of current
-  const readyAhead = questions.length - 1 - cur;
 
   if (step === "quiz") return (
     <div style={{ fontFamily: "'DM Sans', system-ui, sans-serif", color: "#f0f0f0", background: "#0d0d12", minHeight: "calc(100vh - 56px)", paddingBottom: 60 }}>
