@@ -53,27 +53,34 @@ const TOPICS = [
 ];
 
 const DIFFICULTIES = ["Easy", "Medium", "Hard"];
-const BATCH_SIZE = 10; // Generate 10 questions per API call
-const QUESTIONS_PER_DIFFICULTY = 84; // ~250 total (84 × 3 = 252)
+const BATCH_SIZE = 10;
+const QUESTIONS_PER_DIFFICULTY = 84; // ~250 total
 
 async function generateBatch(topic, difficulty, batchNum) {
-  const prompt = `You are a DECA/FBLA business competition exam generator.
-Generate exactly ${BATCH_SIZE} unique multiple-choice questions about: ${topic}
+  const diffGuide = {
+    Easy: "vocabulary definitions, basic concept identification, simple 'what is' questions. One sentence max per question. Example: 'What term describes the process of buying and selling goods between countries?' or 'Which of the following is an example of a variable cost?'",
+    Medium: "application of concepts, short scenarios (one sentence), identifying correct terms from descriptions. Example: 'A business sells more products during the holiday season. This is an example of which type of demand?' or 'Which pricing strategy involves setting a low initial price to gain market share?'",
+    Hard: "analysis and multi-concept questions, still concise. Example: 'Which of the following would MOST likely cause a decrease in consumer demand?' or 'A company increases its advertising budget by 20% and sees a 5% increase in sales. What does this suggest about the campaign?'"
+  };
+
+  const prompt = `You are a DECA and FBLA business competition exam question writer.
+
+Generate exactly ${BATCH_SIZE} multiple-choice questions about: ${topic}
 Difficulty: ${difficulty}
-Batch number: ${batchNum} (make sure these are different from previous batches)
+Batch: ${batchNum} — make questions different from typical batches
 
-Return ONLY a valid JSON array, no markdown, no explanation:
-[{"q":"Question text?","options":["A) option","B) option","C) option","D) option"],"answer":"A","explanation":"Brief explanation.","difficulty":"${difficulty}"}]
+STYLE GUIDE — this is critical:
+- Questions must match the style of real DECA/FBLA written exams
+- ${diffGuide[difficulty]}
+- Questions should be SHORT — 1-2 sentences maximum
+- No lengthy multi-paragraph scenarios
+- Focus on: vocabulary, definitions, concept identification, short applications
+- All 4 answer choices must be plausible and similar in length
+- Wrong answers should be common misconceptions, not obviously wrong
+- Answer field is ONLY the letter: A, B, C, or D
 
-Rules:
-- Questions MUST be relevant to actual DECA and FBLA competition content
-- Cover core concepts, definitions, calculations, real-world applications, and scenarios
-- Same concept can appear multiple times but worded differently or from a different angle
-- All 4 options must be plausible — no obvious wrong answers
-- Answer field is just the letter: A, B, C, or D
-- Explanations should be educational and specific
-- No trivia or obscure facts — focus on what students actually need to know
-- Mix question styles: definitions, calculations, scenario-based, application, analysis`;
+Return ONLY a valid JSON array, no markdown:
+[{"q":"Short question here?","options":["A) option","B) option","C) option","D) option"],"answer":"A","explanation":"One sentence explanation.","difficulty":"${difficulty}"}]`;
 
   const response = await client.messages.create({
     model: "claude-haiku-4-5-20251001",
@@ -124,11 +131,17 @@ async function main() {
   console.log(`Generating questions for ${TOPICS.length} topics...`);
   console.log("This will take a while — go grab a snack!\n");
 
-  // Load existing bank if it exists (so we can resume if interrupted)
+  // Start fresh but save a backup of old bank
   let bank = {};
-  if (fs.existsSync("src/questionBank.json")) {
-    bank = JSON.parse(fs.readFileSync("src/questionBank.json", "utf8"));
-    console.log("Found existing question bank — resuming where we left off.");
+  const newBankPath = "src/questionBank.json";
+  const inProgressPath = "src/questionBank_inprogress.json";
+
+  // Resume from in-progress file if it exists
+  if (fs.existsSync(inProgressPath)) {
+    bank = JSON.parse(fs.readFileSync(inProgressPath, "utf8"));
+    console.log(`Resuming in-progress generation (${Object.keys(bank).length} topics done)...\n`);
+  } else {
+    console.log("Starting fresh with improved DECA/FBLA style questions...\n");
   }
 
   for (const { cat, topic } of TOPICS) {
@@ -137,18 +150,21 @@ async function main() {
       console.log(`⏭ Skipping ${topic} (already generated ${bank[key].length} questions)`);
       continue;
     }
-    if (bank[key] && bank[key].length < 50) {
-      console.log(`🔄 Retrying ${topic} (only ${bank[key].length} questions — needs more)`);
-      delete bank[key];
-    }
 
     bank[key] = await generateTopic(cat, topic);
+
+    // Save to in-progress file after each topic
+    fs.writeFileSync(inProgressPath, JSON.stringify(bank, null, 2));
+    console.log(`💾 Saved progress`);
 
     // Save after each topic in case of interruption
     fs.writeFileSync("src/questionBank.json", JSON.stringify(bank, null, 2));
     console.log(`💾 Saved progress`);
   }
 
+  // Save final bank and clean up in-progress file
+  fs.writeFileSync(newBankPath, JSON.stringify(bank, null, 2));
+  if (fs.existsSync(inProgressPath)) fs.unlinkSync(inProgressPath);
   console.log("\n✅ Done! Question bank saved to src/questionBank.json");
   const total = Object.values(bank).reduce((a, b) => a + b.length, 0);
   console.log(`📊 Total questions: ${total}`);
