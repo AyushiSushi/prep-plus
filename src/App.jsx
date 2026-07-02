@@ -19,8 +19,8 @@ const QTYPES = [
 
 function Logo({ nav }) {
   return (
-    <span onClick={nav} style={{ cursor: nav ? "pointer" : "default", fontFamily: "'Playfair Display', Georgia, serif", fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em" }}>
-      <span style={{ color: "#fff" }}>Prep</span><span style={{ color: "#2d9b6b" }}>+</span>
+    <span onClick={nav} style={{ cursor: nav ? "pointer" : "default", fontFamily: "'DM Sans', sans-serif", fontSize: 17, fontWeight: 700, letterSpacing: "-0.02em", color: "#fff" }}>
+      Prep+
     </span>
   );
 }
@@ -33,18 +33,18 @@ function NavBar({ page, setPage, quizHistory }) {
     { id: "about", label: "About" },
   ];
   return (
-    <nav style={{ position: "sticky", top: 0, zIndex: 100, background: "rgba(13,13,18,0.94)", backdropFilter: "blur(14px)", borderBottom: "1px solid rgba(255,255,255,0.07)", padding: "0 20px" }}>
-      <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: 56 }}>
+    <nav style={{ position: "sticky", top: 0, zIndex: 100, background: "rgba(13,13,18,0.96)", backdropFilter: "blur(14px)", borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "0 20px" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: 52 }}>
         <Logo nav={() => setPage("home")} />
         <div style={{ display: "flex", gap: 2, alignItems: "center" }}>
           {links.map(l => (
-            <button key={l.id} onClick={() => setPage(l.id)} style={{ background: "none", border: "none", cursor: "pointer", padding: "6px 11px", borderRadius: 8, fontSize: 13.5, fontWeight: 500, color: page === l.id ? "#fff" : "#555", transition: "color 0.12s", fontFamily: "inherit" }}>
+            <button key={l.id} onClick={() => setPage(l.id)} style={{ background: "none", border: "none", cursor: "pointer", padding: "6px 11px", borderRadius: 6, fontSize: 13, fontWeight: 500, color: page === l.id ? "#ddd" : "#555", transition: "color 0.12s", fontFamily: "inherit" }}>
               {l.label}
-              {l.id === "dashboard" && quizHistory.length > 0 && <span style={{ marginLeft: 5, background: "#2d9b6b", color: "#fff", fontSize: 10, borderRadius: 10, padding: "1px 6px" }}>{quizHistory.length}</span>}
+              {l.id === "dashboard" && quizHistory.length > 0 && <span style={{ marginLeft: 5, background: "rgba(255,255,255,0.1)", color: "#888", fontSize: 10, borderRadius: 4, padding: "1px 5px" }}>{quizHistory.length}</span>}
             </button>
           ))}
-          <button onClick={() => setPage("generate")} style={{ marginLeft: 8, background: "#2d9b6b", border: "none", color: "#fff", borderRadius: 8, padding: "7px 16px", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", transition: "filter 0.12s" }}>
-            Get Started
+          <button onClick={() => setPage("generate")} style={{ marginLeft: 8, background: "#fff", border: "none", color: "#0d0d12", borderRadius: 6, padding: "6px 14px", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+            Practice
           </button>
         </div>
       </div>
@@ -180,110 +180,109 @@ function HomePage({ setPage }) {
   const [pillsRef, pillsVis] = useReveal(0.15);
 
   const features = [
-    { icon: "⚡", title: "AI-Generated Questions", desc: "Fresh, unique questions every session — no question banks, no repeats." },
-    { icon: "🎯", title: "Competition-Focused", desc: "Built for DECA, FBLA, and similar business competitions." },
-    { icon: "📊", title: "Track Your Progress", desc: "Monitor accuracy, spot weak areas, and watch your scores climb." },
-    { icon: "🔧", title: "Fully Customizable", desc: "Choose topic, difficulty, question type, and quantity." },
+    { title: "Practice questions for every topic", desc: "From accounting to marketing to economics — every subject area covered." },
+    { title: "Built for DECA and FBLA", desc: "Questions written in the style of real written event exams." },
+    { title: "Track your accuracy", desc: "See how you're doing across topics and spot what needs more work." },
+    { title: "Free, always", desc: "No account, no paywall. Pick a topic and start practicing." },
+  ];
+
+  const catLabels = [
+    "Accounting", "Marketing", "Economics", "Business Management",
+    "Entrepreneurship", "Finance", "Leadership", "Supply Chain",
   ];
 
   return (
     <div style={{ fontFamily: "'DM Sans', system-ui, sans-serif", color: "#f0f0f0", background: "#0d0d12" }}>
       <style>{GS}</style>
 
-      {/* ── HERO with parallax bg ── */}
-      <div style={{ textAlign: "center", padding: "86px 24px 70px", position: "relative", overflow: "hidden" }}>
-        {/* Parallax glow orbs */}
-        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 85% 50% at 50% -5%, rgba(45,155,107,0.13) 0%, transparent 72%)", transform: `translateY(${heroParallax * 0.6}px)`, pointerEvents: "none", transition: "transform 0.1s linear" }} />
-        <div style={{ position: "absolute", top: 40, left: "12%", width: 320, height: 320, borderRadius: "50%", background: "rgba(45,155,107,0.04)", filter: "blur(70px)", transform: `translateY(${heroParallax}px)`, pointerEvents: "none" }} />
-        <div style={{ position: "absolute", top: 60, right: "8%", width: 240, height: 240, borderRadius: "50%", background: "rgba(176,90,176,0.04)", filter: "blur(60px)", transform: `translateY(${heroParallax * 0.7}px)`, pointerEvents: "none" }} />
-        {/* Subtle grid lines */}
-        <div style={{ position: "absolute", inset: 0, backgroundImage: "linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px)", backgroundSize: "60px 60px", pointerEvents: "none", transform: `translateY(${heroParallax * 0.3}px)` }} />
+      {/* ── HERO ── */}
+      <div style={{ textAlign: "center", padding: "100px 24px 80px", position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 70% 40% at 50% 0%, rgba(255,255,255,0.03) 0%, transparent 70%)", pointerEvents: "none" }} />
 
-        <div className="fu" style={{ position: "relative", display: "inline-block", fontSize: 11.5, letterSpacing: "0.2em", color: "#2d9b6b", fontWeight: 600, textTransform: "uppercase", background: "rgba(45,155,107,0.1)", border: "1px solid rgba(45,155,107,0.22)", borderRadius: 20, padding: "5px 14px", marginBottom: 24 }}>
-          Business competition prep made smarter
+        <div className="fu" style={{ position: "relative", fontSize: 11, letterSpacing: "0.2em", color: "#555", fontWeight: 500, textTransform: "uppercase", marginBottom: 28 }}>
+          Business competition prep
         </div>
 
-        <div className="fu" style={{ position: "relative", fontFamily: "'Playfair Display', serif", fontSize: "clamp(52px, 9vw, 86px)", fontWeight: 700, lineHeight: 1.05, marginBottom: 22, animationDelay: "0.07s" }}>
-          <span style={{ color: "#fff" }}>Prep</span><span style={{ color: "#2d9b6b" }}>+</span>
+        <div className="fu" style={{ position: "relative", fontFamily: "'DM Sans', sans-serif", fontSize: "clamp(42px, 7vw, 72px)", fontWeight: 700, lineHeight: 1.08, marginBottom: 24, letterSpacing: "-0.03em", animationDelay: "0.07s" }}>
+          <span style={{ color: "#fff" }}>Prep+</span>
         </div>
 
-        <div className="fu" style={{ position: "relative", fontSize: "clamp(14px, 2vw, 17px)", color: "#666", maxWidth: 520, margin: "0 auto 36px", lineHeight: 1.82, animationDelay: "0.14s" }}>
-          AI-powered practice questions for any business competition, including DECA and FBLA. Pick your topic, set the difficulty, and walk in ready.
+        <div className="fu" style={{ position: "relative", fontSize: "clamp(14px, 2vw, 16px)", color: "#555", maxWidth: 480, margin: "0 auto 40px", lineHeight: 1.8, animationDelay: "0.14s", fontWeight: 400 }}>
+          Practice questions for business competitions including DECA and FBLA. Pick your topic, set the difficulty, and walk in ready.
         </div>
 
         <div className="fu" style={{ position: "relative", display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap", animationDelay: "0.2s" }}>
-          <button className="btn-g" onClick={() => setPage("generate")} style={{ padding: "14px 32px", fontSize: 15, borderRadius: 12 }}>Get Started →</button>
-          <button className="btn-ghost" onClick={() => setPage("dashboard")} style={{ padding: "14px 28px", fontSize: 15, borderRadius: 12 }}>View Dashboard</button>
+          <button className="btn-g" onClick={() => setPage("generate")} style={{ padding: "13px 28px", fontSize: 14, borderRadius: 8, background: "#fff", color: "#0d0d12", fontWeight: 600 }}>Start practicing</button>
+          <button className="btn-ghost" onClick={() => setPage("dashboard")} style={{ padding: "13px 24px", fontSize: 14, borderRadius: 8 }}>Dashboard</button>
         </div>
 
-        {/* Category pills — static, no floating */}
-        <div ref={pillsRef} style={{ position: "relative", display: "flex", flexWrap: "wrap", gap: 7, justifyContent: "center", maxWidth: 680, margin: "40px auto 0" }}>
-          {CATEGORIES.map((c, i) => (
-            <div key={c.id} style={{
-              fontSize: 12, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)",
-              borderRadius: 20, padding: "4px 11px", color: "#555",
-              opacity: pillsVis ? 1 : 0, transform: pillsVis ? "translateY(0)" : "translateY(10px)",
-              transition: `opacity 0.45s ease ${i * 35}ms, transform 0.45s ease ${i * 35}ms`,
-            }}>{c.icon} {c.label.split(" & ")[0].split(",")[0]}</div>
+        {/* Simple topic tags */}
+        <div ref={pillsRef} style={{ position: "relative", display: "flex", flexWrap: "wrap", gap: 6, justifyContent: "center", maxWidth: 600, margin: "40px auto 0" }}>
+          {catLabels.map((c, i) => (
+            <div key={c} style={{
+              fontSize: 11.5, background: "transparent", border: "1px solid rgba(255,255,255,0.1)",
+              borderRadius: 4, padding: "4px 10px", color: "#444", letterSpacing: "0.02em",
+              opacity: pillsVis ? 1 : 0, transform: pillsVis ? "translateY(0)" : "translateY(8px)",
+              transition: `opacity 0.4s ease ${i * 30}ms, transform 0.4s ease ${i * 30}ms`,
+            }}>{c}</div>
           ))}
         </div>
       </div>
 
+      {/* ── DIVIDER ── */}
+      <div style={{ maxWidth: 980, margin: "0 auto", padding: "0 24px" }}>
+        <div style={{ height: 1, background: "rgba(255,255,255,0.06)" }} />
+      </div>
+
       {/* ── FEATURES ── */}
-      <div style={{ maxWidth: 980, margin: "0 auto", padding: "60px 24px" }}>
-        <div ref={featRef} className={`reveal ${featVis ? "visible" : ""}`} style={{ textAlign: "center", marginBottom: 44 }}>
-          <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.18em", color: "#2d9b6b", fontWeight: 600, marginBottom: 10 }}>What Prep+ does</div>
-          <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 30, fontWeight: 700, color: "#fff" }}>Built for competitors, by a student</div>
-          <div style={{ width: 40, height: 2, background: "#2d9b6b", borderRadius: 2, margin: "14px auto 0", transformOrigin: "center" }} className={featVis ? "divider-line" : ""} />
+      <div style={{ maxWidth: 980, margin: "0 auto", padding: "72px 24px" }}>
+        <div ref={featRef} className={`reveal ${featVis ? "visible" : ""}`} style={{ marginBottom: 48 }}>
+          <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.18em", color: "#444", fontWeight: 500, marginBottom: 12 }}>What it is</div>
+          <div style={{ fontSize: "clamp(22px, 3vw, 28px)", fontWeight: 600, color: "#e0e0e0", lineHeight: 1.3, maxWidth: 480 }}>A practice tool built for business competition students</div>
         </div>
-        <div ref={featStaggerRef} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))", gap: 16 }}>
+        <div ref={featStaggerRef} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))", gap: 1, border: "1px solid rgba(255,255,255,0.07)", borderRadius: 12, overflow: "hidden" }}>
           {features.map((f, i) => (
-            <div key={f.title} className={`stagger-child card chov ${featVisibles[i] ? "visible" : ""}`}
-              style={{ padding: "26px 20px", transitionDelay: `${i * 90}ms` }}>
-              <div style={{ fontSize: 28, marginBottom: 14 }}>{f.icon}</div>
-              <div style={{ fontSize: 14.5, fontWeight: 600, color: "#e0e0e0", marginBottom: 8 }}>{f.title}</div>
-              <div style={{ fontSize: 13, color: "#555", lineHeight: 1.72 }}>{f.desc}</div>
+            <div key={f.title} className={`stagger-child ${featVisibles[i] ? "visible" : ""}`}
+              style={{ padding: "28px 24px", background: "rgba(255,255,255,0.02)", borderRight: i < 3 ? "1px solid rgba(255,255,255,0.07)" : "none", transitionDelay: `${i * 80}ms` }}>
+              <div style={{ fontSize: 13.5, fontWeight: 600, color: "#d0d0d0", marginBottom: 8, lineHeight: 1.4 }}>{f.title}</div>
+              <div style={{ fontSize: 13, color: "#4a4a4a", lineHeight: 1.7 }}>{f.desc}</div>
             </div>
           ))}
         </div>
       </div>
 
       {/* ── TOPICS ── */}
-      <div style={{ maxWidth: 980, margin: "0 auto", padding: "0 24px 64px" }}>
-        <div ref={topicHeadRef} className={`reveal ${topicHeadVis ? "visible" : ""}`} style={{ textAlign: "center", marginBottom: 32 }}>
-          <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.18em", color: "#444", fontWeight: 600, marginBottom: 10 }}>Supported subject areas</div>
-          <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 26, fontWeight: 700, color: "#fff" }}>Every event, covered</div>
+      <div style={{ maxWidth: 980, margin: "0 auto", padding: "0 24px 80px" }}>
+        <div ref={topicHeadRef} className={`reveal ${topicHeadVis ? "visible" : ""}`} style={{ marginBottom: 28 }}>
+          <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.18em", color: "#444", fontWeight: 500, marginBottom: 12 }}>Topics</div>
+          <div style={{ fontSize: "clamp(20px, 3vw, 26px)", fontWeight: 600, color: "#e0e0e0" }}>Every event, covered</div>
         </div>
-        <div ref={topicStaggerRef} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(196px, 1fr))", gap: 10 }}>
+        <div ref={topicStaggerRef} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 8 }}>
           {CATEGORIES.map((cat, i) => (
-            <div key={cat.id} className={`stagger-child card chov ${topicVisibles[i] ? "visible" : ""}`}
+            <div key={cat.id} className={`stagger-child chov ${topicVisibles[i] ? "visible" : ""}`}
               onClick={() => setPage("generate")}
-              style={{ padding: "16px 14px", position: "relative", overflow: "hidden", transitionDelay: `${i * 55}ms` }}>
-              <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, ${cat.accent}, transparent)`, opacity: topicVisibles[i] ? 1 : 0, transform: topicVisibles[i] ? "scaleX(1)" : "scaleX(0)", transformOrigin: "left", transition: `transform 0.6s cubic-bezier(.22,1,.36,1) ${i * 55 + 200}ms, opacity 0.4s ease ${i * 55}ms` }} />
-              <div className="topic-card-inner">
-                <div style={{ fontSize: 20, marginBottom: 7 }}>{cat.icon}</div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: "#ccc", lineHeight: 1.4, marginBottom: 3 }}>{cat.label}</div>
-                <div style={{ fontSize: 11, color: "#3a3a3a" }}>{cat.topics.length} topics</div>
-              </div>
+              style={{ padding: "16px 16px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.07)", background: "rgba(255,255,255,0.02)", transitionDelay: `${i * 50}ms`, cursor: "pointer" }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: "#bbb", lineHeight: 1.4, marginBottom: 3 }}>{cat.label}</div>
+              <div style={{ fontSize: 11, color: "#3a3a3a" }}>{cat.topics.length} topics</div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* ── WHY BETTER ── */}
-      <div style={{ background: "rgba(45,155,107,0.04)", borderTop: "1px solid rgba(45,155,107,0.09)", borderBottom: "1px solid rgba(45,155,107,0.09)", padding: "64px 24px", overflow: "hidden" }}>
-        <div style={{ maxWidth: 860, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 48, alignItems: "center" }}>
+      {/* ── WHY ── */}
+      <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "72px 24px" }}>
+        <div style={{ maxWidth: 860, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 60, alignItems: "start" }}>
           <div ref={whyRef} className={`reveal-left ${whyVis ? "visible" : ""}`}>
-            <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.18em", color: "#2d9b6b", fontWeight: 600, marginBottom: 12 }}>Why Prep+?</div>
-            <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 28, fontWeight: 700, color: "#fff", lineHeight: 1.25, marginBottom: 14 }}>Custom, instant, and adaptive</div>
-            <div style={{ fontSize: 14, color: "#5a5a5a", lineHeight: 1.82 }}>Unlike static question banks, Prep+ generates fresh questions tailored to your exact topic, difficulty, and format every time.</div>
+            <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.18em", color: "#444", fontWeight: 500, marginBottom: 12 }}>Why use Prep+</div>
+            <div style={{ fontSize: "clamp(20px, 3vw, 26px)", fontWeight: 600, color: "#e0e0e0", lineHeight: 1.3, marginBottom: 14 }}>Practice that actually prepares you</div>
+            <div style={{ fontSize: 13.5, color: "#4a4a4a", lineHeight: 1.85 }}>Questions written in the format of real written events — not generic business trivia.</div>
           </div>
-          <div ref={whyListRef} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            {["Never see the same question twice","Questions built for competition formats","Detailed explanations after every answer","Free, student-built, always improving"].map((t, i) => (
+          <div ref={whyListRef} style={{ display: "flex", flexDirection: "column", gap: 16, paddingTop: 4 }}>
+            {["Questions match the style of real exams", "Covers vocab, concepts, and applications", "Explanations after every answer", "Free and student-built"].map((t, i) => (
               <div key={t} className={`stagger-child ${whyListVisibles[i] ? "visible" : ""}`}
-                style={{ display: "flex", gap: 12, alignItems: "center", transitionDelay: `${i * 100}ms` }}>
-                <span style={{ color: "#2d9b6b", fontWeight: 700, fontSize: 16, flexShrink: 0 }}>✓</span>
-                <span style={{ fontSize: 14, color: "#888" }}>{t}</span>
+                style={{ display: "flex", gap: 14, alignItems: "flex-start", transitionDelay: `${i * 100}ms` }}>
+                <span style={{ color: "#333", fontWeight: 600, fontSize: 14, flexShrink: 0, marginTop: 1 }}>—</span>
+                <span style={{ fontSize: 13.5, color: "#777", lineHeight: 1.6 }}>{t}</span>
               </div>
             ))}
           </div>
@@ -291,17 +290,17 @@ function HomePage({ setPage }) {
       </div>
 
       {/* ── CTA ── */}
-      <div ref={ctaRef} className={`reveal-scale ${ctaVis ? "visible" : ""}`} style={{ textAlign: "center", padding: "72px 24px" }}>
-        <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 28, fontWeight: 700, color: "#fff", marginBottom: 10 }}>Ready to start practicing?</div>
-        <div style={{ fontSize: 14, color: "#4a4a4a", marginBottom: 28 }}>No signup required. Just pick a topic and go.</div>
-        <button className="btn-g" onClick={() => setPage("generate")} style={{ padding: "15px 36px", fontSize: 15, borderRadius: 12 }}>Start Practicing →</button>
+      <div ref={ctaRef} className={`reveal-scale ${ctaVis ? "visible" : ""}`} style={{ textAlign: "center", padding: "80px 24px" }}>
+        <div style={{ fontSize: "clamp(20px, 3vw, 26px)", fontWeight: 600, color: "#e0e0e0", marginBottom: 10 }}>Ready to start?</div>
+        <div style={{ fontSize: 14, color: "#444", marginBottom: 28 }}>No account needed.</div>
+        <button className="btn-g" onClick={() => setPage("generate")} style={{ padding: "13px 32px", fontSize: 14, borderRadius: 8, background: "#fff", color: "#0d0d12", fontWeight: 600 }}>Start practicing</button>
       </div>
 
       {/* ── FOOTER ── */}
       <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)", padding: "18px 24px", display: "flex", justifyContent: "center", gap: 20, flexWrap: "wrap", alignItems: "center" }}>
         {["home","about","disclaimer"].map(p => <button key={p} onClick={() => setPage(p)} style={{ background: "none", border: "none", color: "#333", fontSize: 12, cursor: "pointer", fontFamily: "inherit", textTransform: "capitalize" }}>{p}</button>)}
-        <a href="mailto:prepplus.app@gmail.com" style={{ color: "#444", fontSize: 12, textDecoration: "none" }}>prepplus.app@gmail.com</a>
-        <span style={{ color: "#252525", fontSize: 12 }}>Prep+ is not affiliated with DECA, FBLA, or any organization.</span>
+        <a href="mailto:prepplus.app@gmail.com" style={{ color: "#333", fontSize: 12, textDecoration: "none" }}>prepplus.app@gmail.com</a>
+        <span style={{ color: "#252525", fontSize: 12 }}>Not affiliated with DECA, FBLA, or any organization.</span>
       </div>
     </div>
   );
