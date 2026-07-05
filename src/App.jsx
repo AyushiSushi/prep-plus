@@ -180,7 +180,7 @@ function HomePage({ setPage }) {
   const [pillsRef, pillsVis] = useReveal(0.15);
 
   const features = [
-    { title: "Practice questions for every topic", desc: "From accounting to marketing to economics — every subject area covered." },
+    { title: "Practice questions for every topic", desc: "From accounting to marketing to economics, every subject area covered." },
     { title: "Built for DECA and FBLA", desc: "Questions written in the style of real written event exams." },
     { title: "Track your accuracy", desc: "See how you're doing across topics and spot what needs more work." },
     { title: "Free, always", desc: "No account, no paywall. Pick a topic and start practicing." },
@@ -196,32 +196,32 @@ function HomePage({ setPage }) {
       <style>{GS}</style>
 
       {/* ── HERO ── */}
-      <div style={{ textAlign: "center", padding: "100px 24px 80px", position: "relative", overflow: "hidden" }}>
+      <div style={{ textAlign: "center", padding: "120px 24px 100px", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 70% 45% at 50% 0%, rgba(45,155,107,0.1) 0%, transparent 70%)", pointerEvents: "none" }} />
 
-        <div className="fu" style={{ position: "relative", fontSize: 11, letterSpacing: "0.2em", color: "#2d9b6b", fontWeight: 600, textTransform: "uppercase", marginBottom: 28 }}>
+        <div className="fu" style={{ position: "relative", fontSize: 12, letterSpacing: "0.2em", color: "#2d9b6b", fontWeight: 600, textTransform: "uppercase", marginBottom: 32 }}>
           Business competition prep
         </div>
 
-        <div className="fu" style={{ position: "relative", fontFamily: "'DM Sans', sans-serif", fontSize: "clamp(42px, 7vw, 72px)", fontWeight: 700, lineHeight: 1.08, marginBottom: 24, letterSpacing: "-0.03em", animationDelay: "0.07s" }}>
+        <div className="fu" style={{ position: "relative", fontFamily: "'DM Sans', sans-serif", fontSize: "clamp(56px, 9vw, 96px)", fontWeight: 700, lineHeight: 1.05, marginBottom: 28, letterSpacing: "-0.03em", animationDelay: "0.07s" }}>
           <span style={{ color: "#fff" }}>Prep</span><span style={{ color: "#2d9b6b" }}>+</span>
         </div>
 
-        <div className="fu" style={{ position: "relative", fontSize: "clamp(14px, 2vw, 16px)", color: "#555", maxWidth: 480, margin: "0 auto 40px", lineHeight: 1.8, animationDelay: "0.14s", fontWeight: 400 }}>
+        <div className="fu" style={{ position: "relative", fontSize: "clamp(15px, 2vw, 18px)", color: "#555", maxWidth: 520, margin: "0 auto 44px", lineHeight: 1.8, animationDelay: "0.14s", fontWeight: 400 }}>
           Practice questions for business competitions including DECA and FBLA. Pick your topic, set the difficulty, and walk in ready.
         </div>
 
-        <div className="fu" style={{ position: "relative", display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap", animationDelay: "0.2s" }}>
-          <button className="btn-g" onClick={() => setPage("generate")} style={{ padding: "13px 28px", fontSize: 14, borderRadius: 8 }}>Start practicing</button>
-          <button className="btn-ghost" onClick={() => setPage("dashboard")} style={{ padding: "13px 24px", fontSize: 14, borderRadius: 8 }}>Dashboard</button>
+        <div className="fu" style={{ position: "relative", display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", animationDelay: "0.2s" }}>
+          <button className="btn-g" onClick={() => setPage("generate")} style={{ padding: "14px 32px", fontSize: 15, borderRadius: 8 }}>Start practicing</button>
+          <button className="btn-ghost" onClick={() => setPage("dashboard")} style={{ padding: "14px 26px", fontSize: 15, borderRadius: 8 }}>Dashboard</button>
         </div>
 
         {/* Simple topic tags */}
-        <div ref={pillsRef} style={{ position: "relative", display: "flex", flexWrap: "wrap", gap: 6, justifyContent: "center", maxWidth: 600, margin: "40px auto 0" }}>
+        <div ref={pillsRef} style={{ position: "relative", display: "flex", flexWrap: "wrap", gap: 7, justifyContent: "center", maxWidth: 640, margin: "48px auto 0" }}>
           {catLabels.map((c, i) => (
             <div key={c} style={{
-              fontSize: 11.5, background: "rgba(45,155,107,0.06)", border: "1px solid rgba(45,155,107,0.15)",
-              borderRadius: 4, padding: "4px 10px", color: "#4a9e7a", letterSpacing: "0.02em",
+              fontSize: 12.5, background: "rgba(45,155,107,0.06)", border: "1px solid rgba(45,155,107,0.15)",
+              borderRadius: 4, padding: "5px 12px", color: "#4a9e7a", letterSpacing: "0.02em",
               opacity: pillsVis ? 1 : 0, transform: pillsVis ? "translateY(0)" : "translateY(8px)",
               transition: `opacity 0.4s ease ${i * 30}ms, transform 0.4s ease ${i * 30}ms`,
             }}>{c}</div>
@@ -413,7 +413,7 @@ function GeneratePage({ quizHistory, setQuizHistory }) {
       <div style={{ maxWidth: 820, margin: "0 auto", padding: "40px 22px" }}>
         <div className="fu" style={{ marginBottom: 34 }}>
           <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 28, fontWeight: 700, color: "#fff", marginBottom: 5 }}>Generate Practice</div>
-          <div style={{ fontSize: 14, color: "#555" }}>Customize your session — AI generates the questions instantly.</div>
+          <div style={{ fontSize: 14, color: "#555" }}>Customize your session and start instantly.</div>
         </div>
 
         {/* Category */}
@@ -434,7 +434,7 @@ function GeneratePage({ quizHistory, setQuizHistory }) {
         {/* Topic */}
         {cat && (
           <div className="fu" style={{ marginBottom: 26 }}>
-            <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.13em", color: "#444", fontWeight: 600, marginBottom: 11 }}>Topic <span style={{ fontSize: 11, color: "#333", textTransform: "none", letterSpacing: 0, fontWeight: 400 }}>— optional</span></div>
+            <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.13em", color: "#444", fontWeight: 600, marginBottom: 11 }}>Topic <span style={{ fontSize: 11, color: "#333", textTransform: "none", letterSpacing: 0, fontWeight: 400 }}>optional</span></div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
               <button className="pill" onClick={() => setSelTopic(null)} style={{ borderColor: !selTopic ? cat.accent : undefined, color: !selTopic ? "#fff" : undefined, background: !selTopic ? `${cat.accent}1a` : undefined }}>All topics</button>
               {cat.topics.map(t => <button key={t} className="pill" onClick={() => setSelTopic(t)} style={{ borderColor: selTopic === t ? cat.accent : undefined, color: selTopic === t ? "#fff" : undefined, background: selTopic === t ? `${cat.accent}1a` : undefined }}>{t}</button>)}
@@ -550,7 +550,7 @@ function GeneratePage({ quizHistory, setQuizHistory }) {
           <div className="si">
             {qtype === "mcq" ? (
               <div style={{ background: isCorrect ? "rgba(45,155,107,0.09)" : "rgba(192,48,42,0.09)", border: `1px solid ${isCorrect ? "rgba(45,155,107,0.28)" : "rgba(192,48,42,0.28)"}`, borderRadius: 13, padding: "16px 18px", marginBottom: 14 }}>
-                <div style={{ fontWeight: 600, fontSize: 14, marginBottom: 7, color: isCorrect ? "#6ddeb0" : "#ff8080" }}>{isCorrect ? "✓ Correct!" : `✗ Incorrect — answer is ${q.answer}`}</div>
+                <div style={{ fontWeight: 600, fontSize: 14, marginBottom: 7, color: isCorrect ? "#6ddeb0" : "#ff8080" }}>{isCorrect ? "✓ Correct!" : `✗ Incorrect, answer is ${q.answer}`}</div>
                 <div style={{ fontSize: 13.5, lineHeight: 1.72, color: "#888" }}>{q.explanation}</div>
               </div>
             ) : (
@@ -717,13 +717,13 @@ function DashboardPage({ quizHistory }) {
           {topicStats.filter(t => t.pct < 70).length > 0 && (
             <div className="card" style={{ padding: "18px", borderColor: "rgba(192,48,42,0.25)" }}>
               <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.12em", color: "#c0302a", fontWeight: 600, marginBottom: 11 }}>⚠ Needs Work</div>
-              {topicStats.filter(t => t.pct < 70).map(t => <div key={t.topic} style={{ fontSize: 13, color: "#888", padding: "4px 0", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>{t.topic} — <span style={{ color: "#ff8080" }}>{t.pct}%</span></div>)}
+              {topicStats.filter(t => t.pct < 70).map(t => <div key={t.topic} style={{ fontSize: 13, color: "#888", padding: "4px 0", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>{t.topic}: <span style={{ color: "#ff8080" }}>{t.pct}%</span></div>)}
             </div>
           )}
           {topicStats.filter(t => t.pct >= 80).length > 0 && (
             <div className="card" style={{ padding: "18px", borderColor: "rgba(45,155,107,0.25)" }}>
               <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.12em", color: "#2d9b6b", fontWeight: 600, marginBottom: 11 }}>✓ Strong Areas</div>
-              {topicStats.filter(t => t.pct >= 80).map(t => <div key={t.topic} style={{ fontSize: 13, color: "#888", padding: "4px 0", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>{t.topic} — <span style={{ color: "#6ddeb0" }}>{t.pct}%</span></div>)}
+              {topicStats.filter(t => t.pct >= 80).map(t => <div key={t.topic} style={{ fontSize: 13, color: "#888", padding: "4px 0", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>{t.topic}: <span style={{ color: "#6ddeb0" }}>{t.pct}%</span></div>)}
             </div>
           )}
         </div>
@@ -767,9 +767,9 @@ function AboutPage({ setPage }) {
           <div style={{ width: 36, height: 3, background: "#2d9b6b", borderRadius: 2 }} />
         </div>
         {[
-          { label: "What is Prep+?", body: "Prep+ is a free, AI-powered practice platform designed for students competing in business competitions. It generates fresh, custom practice questions on demand — covering everything from accounting and marketing to entrepreneurship and economics." },
-          { label: "Who built it?", body: "Prep+ is a student-built project, created to fill a gap in competition prep resources. Most existing tools rely on static, repetitive question banks. Prep+ uses AI to generate unlimited, tailored questions every session — so you're always practicing with fresh material." },
-          { label: "Our goal", body: "To help students walk into their competition events genuinely prepared — not just memorization-ready, but able to think critically, apply concepts, and handle scenarios they've never seen before. Preparation should be smart, not just thorough." },
+          { label: "What is Prep+?", body: "Prep+ is a free practice platform designed for students competing in business competitions. It has a large bank of questions covering everything from accounting and marketing to entrepreneurship and economics." },
+          { label: "Who built it?", body: "Prep+ is a student-built project, created to fill a gap in competition prep resources. Most existing tools rely on static, repetitive question banks. Prep+ has a large bank of practice questions covering every topic, so you're always getting varied material." },
+          { label: "Our goal", body: "To help students walk into their competition events genuinely prepared, ready to think critically, apply concepts, and handle anything that comes up." },
           { label: "Not affiliated", body: "Prep+ is an independent student project. It is not affiliated with, endorsed by, or connected to DECA, FBLA, BPA, or any other student organization or educational institution." },
         ].map((s, i) => (
           <div key={s.label} className="fu" style={{ marginBottom: 34, animationDelay: `${i * 0.07}s` }}>
@@ -798,10 +798,10 @@ function DisclaimerPage() {
         </div>
         {[
           { label: "No Affiliation", body: "Prep+ is not affiliated with, endorsed by, sponsored by, or in any way connected to DECA Inc., FBLA-PBL, BPA, or any other student organization, competition body, or educational institution. All organization names are used for descriptive and reference purposes only." },
-          { label: "Original Content", body: "All practice questions, answers, explanations, and content on Prep+ are generated by artificial intelligence and are original to this platform. They are not sourced from, copied from, or based on official competition materials, past exams, or proprietary content from any organization." },
-          { label: "Accuracy", body: "While we strive to generate accurate and educationally useful content, Prep+ is a supplementary study tool and not a substitute for official study materials, textbooks, or guidance from teachers and coaches. AI-generated content may occasionally contain inaccuracies — always cross-reference important information." },
+          { label: "Original Content", body: "All practice questions, answers, explanations, and content on Prep+ are original to this platform. They are not sourced from, copied from, or based on official competition materials, past exams, or proprietary content from any organization." },
+          { label: "Accuracy", body: "While we strive to create accurate and educationally useful content, Prep+ is a supplementary study tool and not a substitute for official study materials, textbooks, or guidance from teachers and coaches. Always cross-reference important information with official study materials." },
           { label: "No Guarantees", body: "Prep+ makes no guarantees about competition performance. Practice results are for personal tracking and study purposes only and do not predict official competition scores." },
-          { label: "Use of AI", body: "Questions are generated in real time using Claude by Anthropic. Use of this platform implies acknowledgment that all content is AI-generated." },
+          { label: "Content Notice", body: "Prep+ is a student-built study tool. Content may occasionally contain inaccuracies. Please use alongside official study resources." },
         ].map((s, i) => (
           <div key={s.label} className="fu card" style={{ padding: "20px", marginBottom: 12, animationDelay: `${i * 0.06}s` }}>
             <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.13em", color: "#444", fontWeight: 600, marginBottom: 7 }}>{s.label}</div>
