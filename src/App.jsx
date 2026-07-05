@@ -197,14 +197,14 @@ function HomePage({ setPage }) {
 
       {/* ── HERO ── */}
       <div style={{ textAlign: "center", padding: "100px 24px 80px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 70% 40% at 50% 0%, rgba(255,255,255,0.03) 0%, transparent 70%)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 70% 45% at 50% 0%, rgba(45,155,107,0.1) 0%, transparent 70%)", pointerEvents: "none" }} />
 
-        <div className="fu" style={{ position: "relative", fontSize: 11, letterSpacing: "0.2em", color: "#555", fontWeight: 500, textTransform: "uppercase", marginBottom: 28 }}>
+        <div className="fu" style={{ position: "relative", fontSize: 11, letterSpacing: "0.2em", color: "#2d9b6b", fontWeight: 600, textTransform: "uppercase", marginBottom: 28 }}>
           Business competition prep
         </div>
 
         <div className="fu" style={{ position: "relative", fontFamily: "'DM Sans', sans-serif", fontSize: "clamp(42px, 7vw, 72px)", fontWeight: 700, lineHeight: 1.08, marginBottom: 24, letterSpacing: "-0.03em", animationDelay: "0.07s" }}>
-          <span style={{ color: "#fff" }}>Prep+</span>
+          <span style={{ color: "#fff" }}>Prep</span><span style={{ color: "#2d9b6b" }}>+</span>
         </div>
 
         <div className="fu" style={{ position: "relative", fontSize: "clamp(14px, 2vw, 16px)", color: "#555", maxWidth: 480, margin: "0 auto 40px", lineHeight: 1.8, animationDelay: "0.14s", fontWeight: 400 }}>
@@ -212,7 +212,7 @@ function HomePage({ setPage }) {
         </div>
 
         <div className="fu" style={{ position: "relative", display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap", animationDelay: "0.2s" }}>
-          <button className="btn-g" onClick={() => setPage("generate")} style={{ padding: "13px 28px", fontSize: 14, borderRadius: 8, background: "#fff", color: "#0d0d12", fontWeight: 600 }}>Start practicing</button>
+          <button className="btn-g" onClick={() => setPage("generate")} style={{ padding: "13px 28px", fontSize: 14, borderRadius: 8 }}>Start practicing</button>
           <button className="btn-ghost" onClick={() => setPage("dashboard")} style={{ padding: "13px 24px", fontSize: 14, borderRadius: 8 }}>Dashboard</button>
         </div>
 
@@ -220,8 +220,8 @@ function HomePage({ setPage }) {
         <div ref={pillsRef} style={{ position: "relative", display: "flex", flexWrap: "wrap", gap: 6, justifyContent: "center", maxWidth: 600, margin: "40px auto 0" }}>
           {catLabels.map((c, i) => (
             <div key={c} style={{
-              fontSize: 11.5, background: "transparent", border: "1px solid rgba(255,255,255,0.1)",
-              borderRadius: 4, padding: "4px 10px", color: "#444", letterSpacing: "0.02em",
+              fontSize: 11.5, background: "rgba(45,155,107,0.06)", border: "1px solid rgba(45,155,107,0.15)",
+              borderRadius: 4, padding: "4px 10px", color: "#4a9e7a", letterSpacing: "0.02em",
               opacity: pillsVis ? 1 : 0, transform: pillsVis ? "translateY(0)" : "translateY(8px)",
               transition: `opacity 0.4s ease ${i * 30}ms, transform 0.4s ease ${i * 30}ms`,
             }}>{c}</div>
@@ -231,19 +231,19 @@ function HomePage({ setPage }) {
 
       {/* ── DIVIDER ── */}
       <div style={{ maxWidth: 980, margin: "0 auto", padding: "0 24px" }}>
-        <div style={{ height: 1, background: "rgba(255,255,255,0.06)" }} />
+        <div style={{ height: 1, background: "rgba(45,155,107,0.15)" }} />
       </div>
 
       {/* ── FEATURES ── */}
       <div style={{ maxWidth: 980, margin: "0 auto", padding: "72px 24px" }}>
         <div ref={featRef} className={`reveal ${featVis ? "visible" : ""}`} style={{ marginBottom: 48 }}>
-          <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.18em", color: "#444", fontWeight: 500, marginBottom: 12 }}>What it is</div>
+          <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.18em", color: "#2d9b6b", fontWeight: 600, marginBottom: 12 }}>What it is</div>
           <div style={{ fontSize: "clamp(22px, 3vw, 28px)", fontWeight: 600, color: "#e0e0e0", lineHeight: 1.3, maxWidth: 480 }}>A practice tool built for business competition students</div>
         </div>
-        <div ref={featStaggerRef} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))", gap: 1, border: "1px solid rgba(255,255,255,0.07)", borderRadius: 12, overflow: "hidden" }}>
+        <div ref={featStaggerRef} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))", gap: 1, border: "1px solid rgba(45,155,107,0.2)", borderRadius: 12, overflow: "hidden" }}>
           {features.map((f, i) => (
             <div key={f.title} className={`stagger-child ${featVisibles[i] ? "visible" : ""}`}
-              style={{ padding: "28px 24px", background: "rgba(255,255,255,0.02)", borderRight: i < 3 ? "1px solid rgba(255,255,255,0.07)" : "none", transitionDelay: `${i * 80}ms` }}>
+              style={{ padding: "28px 24px", background: "rgba(45,155,107,0.04)", borderRight: i < 3 ? "1px solid rgba(45,155,107,0.15)" : "none", transitionDelay: `${i * 80}ms` }}>
               <div style={{ fontSize: 13.5, fontWeight: 600, color: "#d0d0d0", marginBottom: 8, lineHeight: 1.4 }}>{f.title}</div>
               <div style={{ fontSize: 13, color: "#4a4a4a", lineHeight: 1.7 }}>{f.desc}</div>
             </div>
@@ -254,34 +254,34 @@ function HomePage({ setPage }) {
       {/* ── TOPICS ── */}
       <div style={{ maxWidth: 980, margin: "0 auto", padding: "0 24px 80px" }}>
         <div ref={topicHeadRef} className={`reveal ${topicHeadVis ? "visible" : ""}`} style={{ marginBottom: 28 }}>
-          <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.18em", color: "#444", fontWeight: 500, marginBottom: 12 }}>Topics</div>
+          <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.18em", color: "#2d9b6b", fontWeight: 600, marginBottom: 12 }}>Topics</div>
           <div style={{ fontSize: "clamp(20px, 3vw, 26px)", fontWeight: 600, color: "#e0e0e0" }}>Every event, covered</div>
         </div>
         <div ref={topicStaggerRef} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 8 }}>
           {CATEGORIES.map((cat, i) => (
             <div key={cat.id} className={`stagger-child chov ${topicVisibles[i] ? "visible" : ""}`}
               onClick={() => setPage("generate")}
-              style={{ padding: "16px 16px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.07)", background: "rgba(255,255,255,0.02)", transitionDelay: `${i * 50}ms`, cursor: "pointer" }}>
+              style={{ padding: "16px 16px", borderRadius: 8, border: "1px solid rgba(45,155,107,0.15)", background: "rgba(45,155,107,0.04)", transitionDelay: `${i * 50}ms`, cursor: "pointer" }}>
               <div style={{ fontSize: 13, fontWeight: 600, color: "#bbb", lineHeight: 1.4, marginBottom: 3 }}>{cat.label}</div>
-              <div style={{ fontSize: 11, color: "#3a3a3a" }}>{cat.topics.length} topics</div>
+              <div style={{ fontSize: 11, color: "#2d9b6b", opacity: 0.6 }}>{cat.topics.length} topics</div>
             </div>
           ))}
         </div>
       </div>
 
       {/* ── WHY ── */}
-      <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "72px 24px" }}>
+      <div style={{ borderTop: "1px solid rgba(45,155,107,0.15)", borderBottom: "1px solid rgba(45,155,107,0.15)", padding: "72px 24px", background: "rgba(45,155,107,0.04)" }}>
         <div style={{ maxWidth: 860, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 60, alignItems: "start" }}>
           <div ref={whyRef} className={`reveal-left ${whyVis ? "visible" : ""}`}>
-            <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.18em", color: "#444", fontWeight: 500, marginBottom: 12 }}>Why use Prep+</div>
+            <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.18em", color: "#2d9b6b", fontWeight: 600, marginBottom: 12 }}>Why use Prep+</div>
             <div style={{ fontSize: "clamp(20px, 3vw, 26px)", fontWeight: 600, color: "#e0e0e0", lineHeight: 1.3, marginBottom: 14 }}>Practice that actually prepares you</div>
-            <div style={{ fontSize: 13.5, color: "#4a4a4a", lineHeight: 1.85 }}>Questions written in the format of real written events — not generic business trivia.</div>
+            <div style={{ fontSize: 13.5, color: "#4a4a4a", lineHeight: 1.85 }}>Questions written in the format of real written events, not generic business trivia.</div>
           </div>
           <div ref={whyListRef} style={{ display: "flex", flexDirection: "column", gap: 16, paddingTop: 4 }}>
             {["Questions match the style of real exams", "Covers vocab, concepts, and applications", "Explanations after every answer", "Free and student-built"].map((t, i) => (
               <div key={t} className={`stagger-child ${whyListVisibles[i] ? "visible" : ""}`}
                 style={{ display: "flex", gap: 14, alignItems: "flex-start", transitionDelay: `${i * 100}ms` }}>
-                <span style={{ color: "#333", fontWeight: 600, fontSize: 14, flexShrink: 0, marginTop: 1 }}>—</span>
+                <span style={{ color: "#2d9b6b", fontWeight: 700, fontSize: 14, flexShrink: 0, marginTop: 1 }}>+</span>
                 <span style={{ fontSize: 13.5, color: "#777", lineHeight: 1.6 }}>{t}</span>
               </div>
             ))}
@@ -293,7 +293,7 @@ function HomePage({ setPage }) {
       <div ref={ctaRef} className={`reveal-scale ${ctaVis ? "visible" : ""}`} style={{ textAlign: "center", padding: "80px 24px" }}>
         <div style={{ fontSize: "clamp(20px, 3vw, 26px)", fontWeight: 600, color: "#e0e0e0", marginBottom: 10 }}>Ready to start?</div>
         <div style={{ fontSize: 14, color: "#444", marginBottom: 28 }}>No account needed.</div>
-        <button className="btn-g" onClick={() => setPage("generate")} style={{ padding: "13px 32px", fontSize: 14, borderRadius: 8, background: "#fff", color: "#0d0d12", fontWeight: 600 }}>Start practicing</button>
+        <button className="btn-g" onClick={() => setPage("generate")} style={{ padding: "13px 32px", fontSize: 14, borderRadius: 8 }}>Start practicing</button>
       </div>
 
       {/* ── FOOTER ── */}
