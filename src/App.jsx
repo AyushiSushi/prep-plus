@@ -19,13 +19,24 @@ const QTYPES = [
 
 function Logo({ nav }) {
   return (
-    <span onClick={nav} style={{ cursor: nav ? "pointer" : "default", fontFamily: "'DM Sans', sans-serif", fontSize: 17, fontWeight: 700, letterSpacing: "-0.02em", color: "#fff" }}>
-      Prep+
+    <span onClick={nav} style={{ cursor: nav ? "pointer" : "default", fontFamily: "inherit", fontSize: 16, fontWeight: 700, letterSpacing: "-0.02em", color: "#fff" }}>
+      Prep<span style={{ color: "#2d9b6b" }}>+</span>
     </span>
   );
 }
 
+function Hamburger({ onClick }) {
+  return (
+    <button onClick={onClick} style={{ width: 36, height: 36, border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, background: "rgba(255,255,255,0.03)", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 4 }}>
+      <span style={{ display: "block", width: 15, height: 1.5, background: "#666", borderRadius: 1 }} />
+      <span style={{ display: "block", width: 15, height: 1.5, background: "#666", borderRadius: 1 }} />
+      <span style={{ display: "block", width: 15, height: 1.5, background: "#666", borderRadius: 1 }} />
+    </button>
+  );
+}
+
 function NavBar({ page, setPage, quizHistory }) {
+  const [menuOpen, setMenuOpen] = useState(false);
   const links = [
     { id: "home", label: "Home" },
     { id: "generate", label: "Practice" },
@@ -33,21 +44,33 @@ function NavBar({ page, setPage, quizHistory }) {
     { id: "about", label: "About" },
   ];
   return (
-    <nav style={{ position: "sticky", top: 0, zIndex: 100, background: "rgba(13,13,18,0.96)", backdropFilter: "blur(14px)", borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "0 20px" }}>
-      <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: 52 }}>
-        <Logo nav={() => setPage("home")} />
+    <nav style={{ position: "sticky", top: 0, zIndex: 100, background: "rgba(10,10,15,0.96)", backdropFilter: "blur(14px)", borderBottom: "1px solid rgba(255,255,255,0.05)", padding: "0 24px" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", height: 54 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          <Hamburger onClick={() => setMenuOpen(o => !o)} />
+          <Logo nav={() => { setPage("home"); setMenuOpen(false); }} />
+        </div>
         <div style={{ display: "flex", gap: 2, alignItems: "center" }}>
           {links.map(l => (
-            <button key={l.id} onClick={() => setPage(l.id)} style={{ background: "none", border: "none", cursor: "pointer", padding: "6px 11px", borderRadius: 6, fontSize: 13, fontWeight: 500, color: page === l.id ? "#ddd" : "#555", transition: "color 0.12s", fontFamily: "inherit" }}>
+            <button key={l.id} onClick={() => setPage(l.id)} style={{ background: "none", border: "none", cursor: "pointer", padding: "6px 11px", borderRadius: 6, fontSize: 12.5, fontWeight: 500, color: page === l.id ? "#bbb" : "#3a3a3a", transition: "color 0.12s", fontFamily: "inherit" }}>
               {l.label}
-              {l.id === "dashboard" && quizHistory.length > 0 && <span style={{ marginLeft: 5, background: "rgba(255,255,255,0.1)", color: "#888", fontSize: 10, borderRadius: 4, padding: "1px 5px" }}>{quizHistory.length}</span>}
+              {l.id === "dashboard" && quizHistory.length > 0 && <span style={{ marginLeft: 5, background: "rgba(45,155,107,0.15)", color: "#2d9b6b", fontSize: 10, borderRadius: 4, padding: "1px 5px" }}>{quizHistory.length}</span>}
             </button>
           ))}
-          <button onClick={() => setPage("generate")} style={{ marginLeft: 8, background: "#fff", border: "none", color: "#0d0d12", borderRadius: 6, padding: "6px 14px", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+          <button onClick={() => setPage("generate")} style={{ marginLeft: 8, background: "#2d9b6b", border: "none", color: "#fff", borderRadius: 7, padding: "6px 16px", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", transition: "filter 0.12s" }}>
             Practice
           </button>
         </div>
       </div>
+      {menuOpen && (
+        <div style={{ position: "absolute", top: 54, left: 0, right: 0, background: "rgba(10,10,15,0.98)", borderBottom: "1px solid rgba(255,255,255,0.05)", padding: "12px 24px" }}>
+          {links.map(l => (
+            <button key={l.id} onClick={() => { setPage(l.id); setMenuOpen(false); }} style={{ display: "block", width: "100%", textAlign: "left", background: "none", border: "none", cursor: "pointer", padding: "10px 0", fontSize: 14, color: page === l.id ? "#fff" : "#555", fontFamily: "inherit", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+              {l.label}
+            </button>
+          ))}
+        </div>
+      )}
     </nav>
   );
 }
@@ -83,40 +106,33 @@ function ScoreBadge({ score, total }) {
 function fmt(s) { return `${Math.floor(s/60)}:${(s%60).toString().padStart(2,"0")}`; }
 
 const GS = `
-  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap');
   *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:#0a0a0f;}
   @keyframes fadeUp{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
   @keyframes spin{to{transform:rotate(360deg)}}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
-  @keyframes float{0%,100%{transform:translateY(0px)}50%{transform:translateY(-10px)}}
   @keyframes lineGrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
-  @keyframes countUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
   .fu{animation:fadeUp 0.42s ease both;}
-  .btn-g{background:#2d9b6b;border:none;color:#fff;border-radius:10px;padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:filter 0.13s,transform 0.1s,box-shadow 0.13s;}
-  .btn-g:hover{filter:brightness(1.1);transform:translateY(-1px);box-shadow:0 6px 24px rgba(45,155,107,0.35);}
+  .btn-g{background:#2d9b6b;border:none;color:#fff;border-radius:8px;padding:11px 24px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:filter 0.13s,transform 0.1s;}
+  .btn-g:hover{filter:brightness(1.1);transform:translateY(-1px);}
   .btn-g:active{transform:scale(0.98);}
-  .btn-g:disabled{opacity:0.4;cursor:not-allowed;transform:none;filter:none;box-shadow:none;}
-  .btn-ghost{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#ccc;border-radius:10px;padding:12px 24px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;transition:all 0.13s;}
-  .btn-ghost:hover{background:rgba(255,255,255,0.1);color:#fff;}
-  .pill{cursor:pointer;transition:all 0.13s;border:1.5px solid rgba(255,255,255,0.1);border-radius:24px;padding:7px 17px;font-size:13px;font-weight:500;color:#777;background:transparent;font-family:inherit;}
-  .pill:hover{border-color:rgba(255,255,255,0.22);color:#ddd;}
-  .card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:14px;}
-  .chov{transition:border-color 0.18s,transform 0.22s,box-shadow 0.18s;cursor:pointer;}
-  .chov:hover{border-color:rgba(255,255,255,0.18);transform:translateY(-3px);box-shadow:0 8px 32px rgba(0,0,0,0.4);}
-  .reveal{opacity:0;transform:translateY(28px);transition:opacity 0.65s cubic-bezier(.22,1,.36,1),transform 0.65s cubic-bezier(.22,1,.36,1);}
+  .btn-g:disabled{opacity:0.4;cursor:not-allowed;transform:none;filter:none;}
+  .btn-ghost{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.09);color:#666;border-radius:8px;padding:11px 22px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;transition:all 0.13s;}
+  .btn-ghost:hover{background:rgba(255,255,255,0.08);color:#999;}
+  .pill{cursor:pointer;transition:all 0.13s;border:1px solid rgba(255,255,255,0.09);border-radius:5px;padding:6px 14px;font-size:12.5px;font-weight:500;color:#555;background:transparent;font-family:inherit;}
+  .pill:hover{border-color:rgba(255,255,255,0.18);color:#aaa;}
+  .card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:10px;}
+  .chov{transition:border-color 0.15s,background 0.15s;cursor:pointer;}
+  .chov:hover{border-color:rgba(255,255,255,0.14);background:rgba(255,255,255,0.05);}
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity 0.6s cubic-bezier(.22,1,.36,1),transform 0.6s cubic-bezier(.22,1,.36,1);}
   .reveal.visible{opacity:1;transform:translateY(0);}
-  .reveal-left{opacity:0;transform:translateX(-32px);transition:opacity 0.65s cubic-bezier(.22,1,.36,1),transform 0.65s cubic-bezier(.22,1,.36,1);}
+  .reveal-left{opacity:0;transform:translateX(-28px);transition:opacity 0.6s cubic-bezier(.22,1,.36,1),transform 0.6s cubic-bezier(.22,1,.36,1);}
   .reveal-left.visible{opacity:1;transform:translateX(0);}
-  .reveal-right{opacity:0;transform:translateX(32px);transition:opacity 0.65s cubic-bezier(.22,1,.36,1),transform 0.65s cubic-bezier(.22,1,.36,1);}
-  .reveal-right.visible{opacity:1;transform:translateX(0);}
-  .reveal-scale{opacity:0;transform:scale(0.92);transition:opacity 0.6s cubic-bezier(.22,1,.36,1),transform 0.6s cubic-bezier(.22,1,.36,1);}
+  .reveal-scale{opacity:0;transform:scale(0.94);transition:opacity 0.55s cubic-bezier(.22,1,.36,1),transform 0.55s cubic-bezier(.22,1,.36,1);}
   .reveal-scale.visible{opacity:1;transform:scale(1);}
-  .stagger-child{opacity:0;transform:translateY(20px);transition:opacity 0.55s cubic-bezier(.22,1,.36,1),transform 0.55s cubic-bezier(.22,1,.36,1);}
+  .stagger-child{opacity:0;transform:translateY(16px);transition:opacity 0.5s cubic-bezier(.22,1,.36,1),transform 0.5s cubic-bezier(.22,1,.36,1);}
   .stagger-child.visible{opacity:1;transform:translateY(0);}
-  .topic-card-inner{transition:transform 0.22s cubic-bezier(.22,1,.36,1);}
-  .chov:hover .topic-card-inner{transform:scale(1.03);}
-  .pill-float{animation:float 3s ease-in-out infinite;}
-  .divider-line{transform-origin:left;animation:lineGrow 0.8s cubic-bezier(.22,1,.36,1) both;}
 `;
 
 // ── SCROLL REVEAL HOOK ────────────────────────────────────────────────────────
@@ -167,9 +183,24 @@ function useParallax(speed = 0.25) {
   return offset;
 }
 
+// ── STARS BACKGROUND ─────────────────────────────────────────────────────────
+function Stars() {
+  const dots = [
+    [5,8],[18,5],[38,3],[62,7],[80,4],[93,15],[2,40],[14,60],[25,25],
+    [55,18],[75,30],[90,50],[8,75],[35,80],[60,70],[82,78],[96,65],
+    [19,88],[42,92],[65,85],[11,48],[48,55],[70,12],[87,35],[30,50],
+  ];
+  return (
+    <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }} preserveAspectRatio="none">
+      {dots.map(([x, y], i) => (
+        <circle key={i} cx={`${x}%`} cy={`${y}%`} r={i % 3 === 0 ? 1.1 : 0.8} fill="rgba(255,255,255,0.28)" />
+      ))}
+    </svg>
+  );
+}
+
 // ── HOME ──────────────────────────────────────────────────────────────────────
 function HomePage({ setPage }) {
-  const heroParallax = useParallax(0.18);
   const [featRef, featVis] = useReveal(0.1);
   const [featStaggerRef, featVisibles] = useStagger(4, 90, 0.08);
   const [topicHeadRef, topicHeadVis] = useReveal(0.15);
@@ -192,97 +223,99 @@ function HomePage({ setPage }) {
   ];
 
   return (
-    <div style={{ fontFamily: "'DM Sans', system-ui, sans-serif", color: "#f0f0f0", background: "#0d0d12" }}>
+    <div style={{ fontFamily: "'DM Sans', system-ui, sans-serif", color: "#f0f0f0", background: "#0a0a0f" }}>
       <style>{GS}</style>
 
       {/* ── HERO ── */}
-      <div style={{ textAlign: "center", padding: "120px 24px 100px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 70% 45% at 50% 0%, rgba(45,155,107,0.1) 0%, transparent 70%)", pointerEvents: "none" }} />
-
-        <div className="fu" style={{ position: "relative", fontSize: 12, letterSpacing: "0.2em", color: "#2d9b6b", fontWeight: 600, textTransform: "uppercase", marginBottom: 32 }}>
-          Business competition prep
+      <div style={{ textAlign: "center", padding: "110px 24px 90px", position: "relative", overflow: "hidden", minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
+        <Stars />
+        <div style={{ position: "relative", zIndex: 2, width: "100%" }}>
+          <div className="fu" style={{ fontSize: 11, letterSpacing: "0.2em", color: "#2d9b6b", fontWeight: 600, textTransform: "uppercase", marginBottom: 28 }}>
+            Business competition prep
+          </div>
+          <div className="fu" style={{ fontSize: "clamp(72px, 12vw, 120px)", fontWeight: 800, lineHeight: 0.95, marginBottom: 28, letterSpacing: "-0.04em", animationDelay: "0.07s" }}>
+            <span style={{ color: "#fff" }}>Prep</span><span style={{ color: "#2d9b6b" }}>+</span>
+          </div>
+          <div className="fu" style={{ fontSize: "clamp(14px, 2vw, 16px)", color: "#3a3a4a", maxWidth: 460, margin: "0 auto 38px", lineHeight: 1.8, animationDelay: "0.14s" }}>
+            Practice questions for business competitions including DECA and FBLA. Pick your topic, set the difficulty, and walk in ready.
+          </div>
+          <div className="fu" style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap", animationDelay: "0.2s" }}>
+            <button className="btn-g" onClick={() => setPage("generate")} style={{ padding: "12px 28px", fontSize: 14 }}>Start practicing</button>
+            <button className="btn-ghost" onClick={() => setPage("dashboard")} style={{ padding: "12px 22px", fontSize: 14 }}>Dashboard</button>
+          </div>
+          <div ref={pillsRef} style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: "center", maxWidth: 580, margin: "38px auto 0" }}>
+            {catLabels.map((c, i) => (
+              <div key={c} style={{
+                fontSize: 12, background: "rgba(45,155,107,0.07)", border: "1px solid rgba(45,155,107,0.16)",
+                borderRadius: 4, padding: "4px 11px", color: "#3d8a5e",
+                opacity: pillsVis ? 1 : 0, transform: pillsVis ? "translateY(0)" : "translateY(8px)",
+                transition: `opacity 0.4s ease ${i * 30}ms, transform 0.4s ease ${i * 30}ms`,
+              }}>{c}</div>
+            ))}
+          </div>
         </div>
+        <div style={{ position: "absolute", bottom: 28, left: "50%", transform: "translateX(-50%)", fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase", color: "#1a1a2a", zIndex: 2 }}>About</div>
+      </div>
 
-        <div className="fu" style={{ position: "relative", fontFamily: "'DM Sans', sans-serif", fontSize: "clamp(56px, 9vw, 96px)", fontWeight: 700, lineHeight: 1.05, marginBottom: 28, letterSpacing: "-0.03em", animationDelay: "0.07s" }}>
-          <span style={{ color: "#fff" }}>Prep</span><span style={{ color: "#2d9b6b" }}>+</span>
+      {/* ── DIVIDER ── */}
+      <div style={{ maxWidth: 980, margin: "0 auto", padding: "0 24px" }}>
+        <div style={{ height: 1, background: "rgba(45,155,107,0.12)" }} />
+      </div>
+
+      {/* ── FEATURES ── */}
+      <div style={{ maxWidth: 980, margin: "0 auto", padding: "72px 24px" }}>
+        <div ref={featRef} className={`reveal ${featVis ? "visible" : ""}`} style={{ marginBottom: 40 }}>
+          <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.18em", color: "#2d9b6b", fontWeight: 600, marginBottom: 12 }}>What it is</div>
+          <div style={{ fontSize: "clamp(20px, 3vw, 26px)", fontWeight: 600, color: "#d0d0d0", lineHeight: 1.3, maxWidth: 420 }}>A practice tool built for business competition students</div>
         </div>
-
-        <div className="fu" style={{ position: "relative", fontSize: "clamp(15px, 2vw, 18px)", color: "#555", maxWidth: 520, margin: "0 auto 44px", lineHeight: 1.8, animationDelay: "0.14s", fontWeight: 400 }}>
-          Practice questions for business competitions including DECA and FBLA. Pick your topic, set the difficulty, and walk in ready.
-        </div>
-
-        <div className="fu" style={{ position: "relative", display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", animationDelay: "0.2s" }}>
-          <button className="btn-g" onClick={() => setPage("generate")} style={{ padding: "14px 32px", fontSize: 15, borderRadius: 8 }}>Start practicing</button>
-          <button className="btn-ghost" onClick={() => setPage("dashboard")} style={{ padding: "14px 26px", fontSize: 15, borderRadius: 8 }}>Dashboard</button>
-        </div>
-
-        {/* Simple topic tags */}
-        <div ref={pillsRef} style={{ position: "relative", display: "flex", flexWrap: "wrap", gap: 7, justifyContent: "center", maxWidth: 640, margin: "48px auto 0" }}>
-          {catLabels.map((c, i) => (
-            <div key={c} style={{
-              fontSize: 12.5, background: "rgba(45,155,107,0.06)", border: "1px solid rgba(45,155,107,0.15)",
-              borderRadius: 4, padding: "5px 12px", color: "#4a9e7a", letterSpacing: "0.02em",
-              opacity: pillsVis ? 1 : 0, transform: pillsVis ? "translateY(0)" : "translateY(8px)",
-              transition: `opacity 0.4s ease ${i * 30}ms, transform 0.4s ease ${i * 30}ms`,
-            }}>{c}</div>
+        <div ref={featStaggerRef} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))", gap: 10 }}>
+          {features.map((f, i) => (
+            <div key={f.title} className={`stagger-child card ${featVisibles[i] ? "visible" : ""}`}
+              style={{ padding: "22px 20px", transitionDelay: `${i * 80}ms` }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: "#c0c0c0", marginBottom: 7, lineHeight: 1.4 }}>{f.title}</div>
+              <div style={{ fontSize: 12.5, color: "#2e2e3a", lineHeight: 1.7 }}>{f.desc}</div>
+            </div>
           ))}
         </div>
       </div>
 
       {/* ── DIVIDER ── */}
       <div style={{ maxWidth: 980, margin: "0 auto", padding: "0 24px" }}>
-        <div style={{ height: 1, background: "rgba(45,155,107,0.15)" }} />
-      </div>
-
-      {/* ── FEATURES ── */}
-      <div style={{ maxWidth: 980, margin: "0 auto", padding: "72px 24px" }}>
-        <div ref={featRef} className={`reveal ${featVis ? "visible" : ""}`} style={{ marginBottom: 48 }}>
-          <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.18em", color: "#2d9b6b", fontWeight: 600, marginBottom: 12 }}>What it is</div>
-          <div style={{ fontSize: "clamp(22px, 3vw, 28px)", fontWeight: 600, color: "#e0e0e0", lineHeight: 1.3, maxWidth: 480 }}>A practice tool built for business competition students</div>
-        </div>
-        <div ref={featStaggerRef} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))", gap: 1, border: "1px solid rgba(45,155,107,0.2)", borderRadius: 12, overflow: "hidden" }}>
-          {features.map((f, i) => (
-            <div key={f.title} className={`stagger-child ${featVisibles[i] ? "visible" : ""}`}
-              style={{ padding: "28px 24px", background: "rgba(45,155,107,0.04)", borderRight: i < 3 ? "1px solid rgba(45,155,107,0.15)" : "none", transitionDelay: `${i * 80}ms` }}>
-              <div style={{ fontSize: 13.5, fontWeight: 600, color: "#d0d0d0", marginBottom: 8, lineHeight: 1.4 }}>{f.title}</div>
-              <div style={{ fontSize: 13, color: "#4a4a4a", lineHeight: 1.7 }}>{f.desc}</div>
-            </div>
-          ))}
-        </div>
+        <div style={{ height: 1, background: "rgba(255,255,255,0.05)" }} />
       </div>
 
       {/* ── TOPICS ── */}
-      <div style={{ maxWidth: 980, margin: "0 auto", padding: "0 24px 80px" }}>
-        <div ref={topicHeadRef} className={`reveal ${topicHeadVis ? "visible" : ""}`} style={{ marginBottom: 28 }}>
+      <div style={{ maxWidth: 980, margin: "0 auto", padding: "64px 24px 80px" }}>
+        <div ref={topicHeadRef} className={`reveal ${topicHeadVis ? "visible" : ""}`} style={{ marginBottom: 24 }}>
           <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.18em", color: "#2d9b6b", fontWeight: 600, marginBottom: 12 }}>Topics</div>
-          <div style={{ fontSize: "clamp(20px, 3vw, 26px)", fontWeight: 600, color: "#e0e0e0" }}>Every event, covered</div>
+          <div style={{ fontSize: "clamp(20px, 3vw, 24px)", fontWeight: 600, color: "#d0d0d0" }}>Every event, covered</div>
         </div>
-        <div ref={topicStaggerRef} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 8 }}>
+        <div ref={topicStaggerRef} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(196px, 1fr))", gap: 8 }}>
           {CATEGORIES.map((cat, i) => (
-            <div key={cat.id} className={`stagger-child chov ${topicVisibles[i] ? "visible" : ""}`}
+            <div key={cat.id} className={`stagger-child card chov ${topicVisibles[i] ? "visible" : ""}`}
               onClick={() => setPage("generate")}
-              style={{ padding: "16px 16px", borderRadius: 8, border: "1px solid rgba(45,155,107,0.15)", background: "rgba(45,155,107,0.04)", transitionDelay: `${i * 50}ms`, cursor: "pointer" }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: "#bbb", lineHeight: 1.4, marginBottom: 3 }}>{cat.label}</div>
-              <div style={{ fontSize: 11, color: "#2d9b6b", opacity: 0.6 }}>{cat.topics.length} topics</div>
+              style={{ padding: "14px 16px", transitionDelay: `${i * 50}ms` }}>
+              <div style={{ fontSize: 12.5, fontWeight: 600, color: "#999", lineHeight: 1.4, marginBottom: 3 }}>{cat.label}</div>
+              <div style={{ fontSize: 11, color: "#2d9b6b", opacity: 0.7 }}>{cat.topics.length} topics</div>
             </div>
           ))}
         </div>
       </div>
 
       {/* ── WHY ── */}
-      <div style={{ borderTop: "1px solid rgba(45,155,107,0.15)", borderBottom: "1px solid rgba(45,155,107,0.15)", padding: "72px 24px", background: "rgba(45,155,107,0.04)" }}>
-        <div style={{ maxWidth: 860, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 60, alignItems: "start" }}>
+      <div style={{ borderTop: "1px solid rgba(45,155,107,0.12)", borderBottom: "1px solid rgba(45,155,107,0.12)", padding: "72px 24px", background: "rgba(45,155,107,0.03)" }}>
+        <div style={{ maxWidth: 860, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 56, alignItems: "start" }}>
           <div ref={whyRef} className={`reveal-left ${whyVis ? "visible" : ""}`}>
             <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.18em", color: "#2d9b6b", fontWeight: 600, marginBottom: 12 }}>Why use Prep+</div>
-            <div style={{ fontSize: "clamp(20px, 3vw, 26px)", fontWeight: 600, color: "#e0e0e0", lineHeight: 1.3, marginBottom: 14 }}>Practice that actually prepares you</div>
-            <div style={{ fontSize: 13.5, color: "#4a4a4a", lineHeight: 1.85 }}>Questions written in the format of real written events, not generic business trivia.</div>
+            <div style={{ fontSize: "clamp(18px, 3vw, 24px)", fontWeight: 600, color: "#d0d0d0", lineHeight: 1.3, marginBottom: 12 }}>Practice that actually prepares you</div>
+            <div style={{ fontSize: 13.5, color: "#2e2e3a", lineHeight: 1.85 }}>Questions written in the format of real written events, not generic business trivia.</div>
           </div>
           <div ref={whyListRef} style={{ display: "flex", flexDirection: "column", gap: 16, paddingTop: 4 }}>
             {["Questions match the style of real exams", "Covers vocab, concepts, and applications", "Explanations after every answer", "Free and student-built"].map((t, i) => (
               <div key={t} className={`stagger-child ${whyListVisibles[i] ? "visible" : ""}`}
                 style={{ display: "flex", gap: 14, alignItems: "flex-start", transitionDelay: `${i * 100}ms` }}>
                 <span style={{ color: "#2d9b6b", fontWeight: 700, fontSize: 14, flexShrink: 0, marginTop: 1 }}>+</span>
-                <span style={{ fontSize: 13.5, color: "#777", lineHeight: 1.6 }}>{t}</span>
+                <span style={{ fontSize: 13.5, color: "#555", lineHeight: 1.6 }}>{t}</span>
               </div>
             ))}
           </div>
@@ -291,20 +324,21 @@ function HomePage({ setPage }) {
 
       {/* ── CTA ── */}
       <div ref={ctaRef} className={`reveal-scale ${ctaVis ? "visible" : ""}`} style={{ textAlign: "center", padding: "80px 24px" }}>
-        <div style={{ fontSize: "clamp(20px, 3vw, 26px)", fontWeight: 600, color: "#e0e0e0", marginBottom: 10 }}>Ready to start?</div>
-        <div style={{ fontSize: 14, color: "#444", marginBottom: 28 }}>No account needed.</div>
-        <button className="btn-g" onClick={() => setPage("generate")} style={{ padding: "13px 32px", fontSize: 14, borderRadius: 8 }}>Start practicing</button>
+        <div style={{ fontSize: "clamp(20px, 3vw, 26px)", fontWeight: 600, color: "#d0d0d0", marginBottom: 10 }}>Ready to start?</div>
+        <div style={{ fontSize: 14, color: "#2e2e3a", marginBottom: 28 }}>No account needed.</div>
+        <button className="btn-g" onClick={() => setPage("generate")} style={{ padding: "12px 32px", fontSize: 14 }}>Start practicing</button>
       </div>
 
       {/* ── FOOTER ── */}
-      <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)", padding: "18px 24px", display: "flex", justifyContent: "center", gap: 20, flexWrap: "wrap", alignItems: "center" }}>
-        {["home","about","disclaimer"].map(p => <button key={p} onClick={() => setPage(p)} style={{ background: "none", border: "none", color: "#333", fontSize: 12, cursor: "pointer", fontFamily: "inherit", textTransform: "capitalize" }}>{p}</button>)}
-        <a href="mailto:prepplus.app@gmail.com" style={{ color: "#333", fontSize: 12, textDecoration: "none" }}>prepplus.app@gmail.com</a>
-        <span style={{ color: "#252525", fontSize: 12 }}>Not affiliated with DECA, FBLA, or any organization.</span>
+      <div style={{ borderTop: "1px solid rgba(255,255,255,0.04)", padding: "18px 24px", display: "flex", justifyContent: "center", gap: 20, flexWrap: "wrap", alignItems: "center" }}>
+        {["home","about","disclaimer"].map(p => <button key={p} onClick={() => setPage(p)} style={{ background: "none", border: "none", color: "#222", fontSize: 12, cursor: "pointer", fontFamily: "inherit", textTransform: "capitalize" }}>{p}</button>)}
+        <a href="mailto:prepplus.app@gmail.com" style={{ color: "#222", fontSize: 12, textDecoration: "none" }}>prepplus.app@gmail.com</a>
+        <span style={{ color: "#161616", fontSize: 12 }}>Not affiliated with DECA, FBLA, or any organization.</span>
       </div>
     </div>
   );
 }
+
 
 // ── GENERATE (config + quiz + results) ───────────────────────────────────────
 import questionBank from "./questionBank.json";
@@ -408,7 +442,7 @@ function GeneratePage({ quizHistory, setQuizHistory }) {
 
   // CONFIG
   if (step === "config") return (
-    <div style={{ fontFamily: "'DM Sans', system-ui, sans-serif", color: "#f0f0f0", background: "#0d0d12", minHeight: "calc(100vh - 56px)", paddingBottom: 60 }}>
+    <div style={{ fontFamily: "'DM Sans', system-ui, sans-serif", color: "#f0f0f0", background: "#0a0a0f", minHeight: "calc(100vh - 56px)", paddingBottom: 60 }}>
       <style>{GS}</style>
       <div style={{ maxWidth: 820, margin: "0 auto", padding: "40px 22px" }}>
         <div className="fu" style={{ marginBottom: 34 }}>
@@ -491,7 +525,7 @@ function GeneratePage({ quizHistory, setQuizHistory }) {
   const progress = (cur / questions.length) * 100;
 
   if (step === "quiz") return (
-    <div style={{ fontFamily: "'DM Sans', system-ui, sans-serif", color: "#f0f0f0", background: "#0d0d12", minHeight: "calc(100vh - 56px)", paddingBottom: 60 }}>
+    <div style={{ fontFamily: "'DM Sans', system-ui, sans-serif", color: "#f0f0f0", background: "#0a0a0f", minHeight: "calc(100vh - 56px)", paddingBottom: 60 }}>
       <style>{`${GS}
         .opt{width:100%;text-align:left;border:1.5px solid rgba(255,255,255,0.08);border-radius:11px;padding:13px 16px;font-size:14px;color:#bbb;background:rgba(255,255,255,0.03);cursor:pointer;transition:all 0.13s;margin-bottom:9px;font-family:inherit;}
         .opt:hover:not([disabled]){border-color:rgba(255,255,255,0.18);background:rgba(255,255,255,0.06);color:#eee;}
@@ -578,7 +612,7 @@ function GeneratePage({ quizHistory, setQuizHistory }) {
     const pct = Math.round((finalScore / questions.length) * 100);
     const wrong = qtype === "mcq" ? questions.map((q, i) => ({ q, i, ua: answers[i] })).filter(x => x.ua !== x.q.answer) : [];
     return (
-      <div style={{ fontFamily: "'DM Sans', system-ui, sans-serif", color: "#f0f0f0", background: "#0d0d12", minHeight: "calc(100vh - 56px)", paddingBottom: 60 }}>
+      <div style={{ fontFamily: "'DM Sans', system-ui, sans-serif", color: "#f0f0f0", background: "#0a0a0f", minHeight: "calc(100vh - 56px)", paddingBottom: 60 }}>
         <style>{GS}</style>
         <div style={{ maxWidth: 700, margin: "0 auto", padding: "42px 20px" }}>
           <div className="fu" style={{ textAlign: "center", marginBottom: 34 }}>
@@ -658,7 +692,7 @@ function DashboardPage({ quizHistory }) {
   }
 
   if (!quizHistory.length) return (
-    <div style={{ fontFamily: "'DM Sans', system-ui, sans-serif", color: "#f0f0f0", background: "#0d0d12", minHeight: "calc(100vh - 56px)", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
+    <div style={{ fontFamily: "'DM Sans', system-ui, sans-serif", color: "#f0f0f0", background: "#0a0a0f", minHeight: "calc(100vh - 56px)", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
       <style>{GS}</style>
       <div style={{ textAlign: "center", maxWidth: 380 }}>
         <div style={{ fontSize: 44, marginBottom: 14 }}>📊</div>
@@ -669,7 +703,7 @@ function DashboardPage({ quizHistory }) {
   );
 
   return (
-    <div style={{ fontFamily: "'DM Sans', system-ui, sans-serif", color: "#f0f0f0", background: "#0d0d12", minHeight: "calc(100vh - 56px)", paddingBottom: 60 }}>
+    <div style={{ fontFamily: "'DM Sans', system-ui, sans-serif", color: "#f0f0f0", background: "#0a0a0f", minHeight: "calc(100vh - 56px)", paddingBottom: 60 }}>
       <style>{GS}</style>
       <div style={{ maxWidth: 900, margin: "0 auto", padding: "40px 22px" }}>
         <div className="fu" style={{ marginBottom: 34 }}>
@@ -757,7 +791,7 @@ function DashboardPage({ quizHistory }) {
 // ── ABOUT ─────────────────────────────────────────────────────────────────────
 function AboutPage({ setPage }) {
   return (
-    <div style={{ fontFamily: "'DM Sans', system-ui, sans-serif", color: "#f0f0f0", background: "#0d0d12", minHeight: "calc(100vh - 56px)", paddingBottom: 80 }}>
+    <div style={{ fontFamily: "'DM Sans', system-ui, sans-serif", color: "#f0f0f0", background: "#0a0a0f", minHeight: "calc(100vh - 56px)", paddingBottom: 80 }}>
       <style>{GS}</style>
       <div style={{ maxWidth: 660, margin: "0 auto", padding: "58px 22px" }}>
         <div className="fu" style={{ marginBottom: 46 }}>
@@ -789,7 +823,7 @@ function AboutPage({ setPage }) {
 // ── DISCLAIMER ────────────────────────────────────────────────────────────────
 function DisclaimerPage() {
   return (
-    <div style={{ fontFamily: "'DM Sans', system-ui, sans-serif", color: "#f0f0f0", background: "#0d0d12", minHeight: "calc(100vh - 56px)", paddingBottom: 80 }}>
+    <div style={{ fontFamily: "'DM Sans', system-ui, sans-serif", color: "#f0f0f0", background: "#0a0a0f", minHeight: "calc(100vh - 56px)", paddingBottom: 80 }}>
       <style>{GS}</style>
       <div style={{ maxWidth: 660, margin: "0 auto", padding: "58px 22px" }}>
         <div className="fu" style={{ marginBottom: 34 }}>
@@ -821,7 +855,7 @@ export default function PrepPlus() {
   const [page, setPage] = useState("home");
   const [quizHistory, setQuizHistory] = useState([]);
   return (
-    <div style={{ fontFamily: "'DM Sans', system-ui, sans-serif", background: "#0d0d12", minHeight: "100vh" }}>
+    <div style={{ fontFamily: "'DM Sans', system-ui, sans-serif", background: "#0a0a0f", minHeight: "100vh" }}>
       <style>{GS}</style>
       <NavBar page={page} setPage={setPage} quizHistory={quizHistory} />
       {page === "home" && <HomePage setPage={setPage} />}
